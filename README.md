@@ -1,13 +1,13 @@
-# Mongo Rocks
+# _Mongo Rocks_
 
+# Getting started
 ## Prerequisites
 You'll need to have the following ready to go:
 
 1. MongoDB (3.6 or above) -  Get is from the [MongoDB Download Centre](https://www.mongodb.com/download-center?community#community).
 2. A GUI - There are a few, my favourite is [RoboMongo](https://robomongo.org/download).
 
-## Getting started
-### Running MongoDB
+## Running MongoDB
 Mongo will install (by default) in:
 
    C:\Program Files\MongoDB\Server\<Version>\bin
@@ -74,16 +74,16 @@ So, we want the defaults so just run `mongo.exe` then we'll firstly see more log
     [conn1] received client metadata from 127.0.0.1:59218 conn: 
     { 
         application: { 
-            name: "MongoDB Shell" 
+            name: 'MongoDB Shell' 
         }, 
         driver: { 
-            name: "MongoDB Internal Client", 
-            version: "3.6.0" 
+            name: 'MongoDB Internal Client', 
+            version: '3.6.0' 
         }, os: { 
-            type: "Windows", 
-            name: "Microsoft Windows 10", 
-            architecture: "x86_64", 
-            version: "10.0 (build 14393)" 
+            type: 'Windows', 
+            name: 'Microsoft Windows 10', 
+            architecture: 'x86_64', 
+            version: '10.0 (build 14393)' 
         } 
     }
     
@@ -91,8 +91,8 @@ So, we want the defaults so just run `mongo.exe` then we'll firstly see more log
 
 We'll also see that the client has written some warning about this not being a recommended configuration as well as the command prompt change to indicate that its waiting for input.
 
-## CRUD
-### Databases & Collections
+# CRUD
+## Databases & Collections
 
 Data in Mongo is contained _collections_ which are in _databases_.  There can be many databases on any server and each database can contain many collections.
 
@@ -121,7 +121,7 @@ To change the database context you're working in (i.e. the value of `db`) use th
 
 We can see what collections are in a database with `show collections`.  There aren't any yet, there will be soon.
 
-### BSON Documents
+## BSON Documents
 
 BSON is the format that Mongo stores and retrieved data in.  Based on JSON, BSON is is nested structure that contains key/value pairs of objects, arrays and data types.  Unlike JSON, BSON is not a text file.  BSON also supports more data types than JSON, these are described in the [MongoDB documentation](https://docs.mongodb.com/manual/reference/bson-types/) and in the [BSON Specification](http://bsonspec.org/spec.html).  In BSON language, the data structure is referred to as a _document_, as are all objects in the document (_nested documents_).
 
@@ -132,8 +132,8 @@ Take this BSON document:
 
     
     {
-        "_id" : ObjectId("0123456789abcdef01234567"),
-        "name" : "David"
+        '_id' : ObjectId('0123456789abcdef01234567'),
+        'name' : 'David'
     }
 
 `ObjectId` is not valid JSON.  This is a BSON object similar to a GUID, but optimised for generation speed over guaranteed uniqueness.  If a document is created without an `_id` field then Mongo will create one and assign it a new `ObjectId`.  
@@ -163,13 +163,13 @@ Mongo provides tooling to export the document to JSON, when it does it used some
 The above document would be serialised to JSON like so:
 
     {
-        "_id": {
-            "$oid":"0123456789abcdef01234567"
+        '_id': {
+            '$oid':'0123456789abcdef01234567'
         },
-        "name":"David"
+        'name':'David'
     }
 
-### Inserting Documents
+## Inserting Documents
 
 Let's insert a document into a collection called `names` in a database called `mongo_rocks`:
 
@@ -179,7 +179,7 @@ Let's insert a document into a collection called `names` in a database called `m
     ... _id: NumberInt(1),
     ... name: 'David'
     ... })
-    WriteResult({ "nInserted" : 1 })
+    WriteResult({ 'nInserted' : 1 })
 
 Every document needs a unique ID, this is always the `_id` field.  If you don't set it explicitly then Mongo will create a new `ObjectId` and assign its value to it.
 
@@ -196,8 +196,8 @@ We can also add an array of documents (as long as the total doesn't exceed 64 Mb
     ... name: 'Charlie'
     ... }])
     {
-            "acknowledged" : true,
-            "insertedIds" : [
+            'acknowledged' : true,
+            'insertedIds' : [
                     NumberInt(2),
                     NumberInt(3),
                     NumberInt(4)
@@ -211,14 +211,14 @@ When we add many, we get the `_id` fields returned to us.  If we try to insert a
     ... name: 'Eve'
     ... })
     WriteResult({
-            "nInserted" : 0,
-            "writeError" : {
-                    "code" : 11000,
-                    "errmsg" : "E11000 duplicate key error collection: test.names index: _id_ dup key: { : 2 }"
+            'nInserted' : 0,
+            'writeError' : {
+                    'code' : 11000,
+                    'errmsg' : 'E11000 duplicate key error collection: test.names index: _id_ dup key: { : 2 }'
             }
     })
 
-### Retrieving Documents
+## Retrieving Documents
 We use the find method to retrieve documents, or rather we use the cursor returned by the find method.  The method has the syntax:
 
     find(<filter>, <projection>)
@@ -228,10 +228,10 @@ Both the filter and the projection are optional.
 To retrieve all the documents we just call the find with either no arguments, or with an empty object.
 
     > db.names.find()
-    { "_id" : 1, "name" : "David" }
-    { "_id" : 2, "name" : "Alice" }
-    { "_id" : 3, "name" : "Bob" }
-    { "_id" : 4, "name" : "Charlie" }
+    { '_id' : 1, 'name' : 'David' }
+    { '_id' : 2, 'name' : 'Alice' }
+    { '_id' : 3, 'name' : 'Bob' }
+    { '_id' : 4, 'name' : 'Charlie' }
 
 The reason that we're seeing the documents, rather than seeing a cursor is because the client is figuring out that we probably want to get the documents, therefore it's iterating the documents with the cursor and displaying them without you having to tell it too.  We'll see later that this doesn't happen when there are a lot of documents returned.
 
@@ -240,20 +240,20 @@ The projection object tells the server what fields we want to see.  We have the 
     > db.names.find({}, {
     ... _id: 1
     ... })
-    { "_id" : 1 }
-    { "_id" : 2 }
-    { "_id" : 3 }
-    { "_id" : 4 }
+    { '_id' : 1 }
+    { '_id' : 2 }
+    { '_id' : 3 }
+    { '_id' : 4 }
 
 If we wanted to exclude the `_id` field then we'd pass a `0` instead:
 
     > db.names.find({}, {
     ... _id: 0
     ... })
-    { "name" : "David" }
-    { "name" : "Alice" }
-    { "name" : "Bob" }
-    { "name" : "Charlie" }
+    { 'name' : 'David' }
+    { 'name' : 'Alice' }
+    { 'name' : 'Bob' }
+    { 'name' : 'Charlie' }
 
 There is a _gotcha_ here,  The `_id` field is always returned unless you explicitly exclude it.  So to get only the names we need to pass both the `name` field and the `_id` field to the projection:
 
@@ -261,10 +261,10 @@ There is a _gotcha_ here,  The `_id` field is always returned unless you explici
     ... _id: 0,
     ... name: 1
     ... })
-    { "name" : "David" }
-    { "name" : "Alice" }
-    { "name" : "Bob" }
-    { "name" : "Charlie" }
+    { 'name' : 'David' }
+    { 'name' : 'Alice' }
+    { 'name' : 'Bob' }
+    { 'name' : 'Charlie' }
     
 >  NB:  This is the only example of `1` and `0` appearing in the projection.
 
@@ -274,15 +274,15 @@ We can search for specific documents by providing a filter document:
     ... name: 'David'
     ... }
     ... )
-    { "_id" : 1, "name" : "David" }
+    { '_id' : 1, 'name' : 'David' }
 
-### Removing Documents
+## Removing Documents
 
 Removing documents is similar to finding them.  We pass in a the same filter object as we would when finding and also an options object.  There is a is safety feature though, the filter object isn't optional (to prevent you from the accidental pressing of go and deleting the entire database).
 
     db.names.remove(<filter>)
     
-### Updating Documents
+## Updating Documents
 
 Updating documents requires two arguments.  Firstly a filter to determine which documents the update affects and secondly a document describing what the update to perform is.
 
@@ -297,74 +297,74 @@ If we wanted to add a date of birth to Alice we could write:
     ... date_of_birth: ISODate('30-01-1995')
     ... }
     ... })
-    WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+    WriteResult({ 'nMatched' : 1, 'nUpserted' : 0, 'nModified' : 1 })
     
 Notice the use of the `$set` operator field.  This tells Mongo that you want to insert a new field, without it Mongo would think that you wanted to replace the whole document.
 
     > db.names.find({
     ... name: 'Alice'
     ... })
-    { "_id" : 2, "name" : "Alice", "date_of_birth" : ISODate("1995-01-30T00:00:00Z") }
+    { '_id' : 2, 'name' : 'Alice', 'date_of_birth' : ISODate('1995-01-30T00:00:00Z') }
     
 
-### Scripting
+## Scripting
 
 The Mongo client will execute arbitrary JavaScript.  For example, we could write a loop to add 1000 documents:
     
     > for(var i = 0; i < 1000; i++) {
     ... db.names.insert({number: NumberInt(i)});
     ... }
-    WriteResult({ "nInserted" : 1 })
+    WriteResult({ 'nInserted' : 1 })
     
 When we search now we see lots of documents:
 
     > db.names.find({}, {_id: 0})
-    { "number" : 0 }
-    { "number" : 1 }
-    { "number" : 2 }
-    { "number" : 3 }
-    { "number" : 4 }
-    { "number" : 5 }
-    { "number" : 6 }
-    { "number" : 7 }
-    { "number" : 8 }
-    { "number" : 9 }
-    { "number" : 10 }
-    { "number" : 11 }
-    { "number" : 12 }
-    { "number" : 13 }
-    { "number" : 14 }
-    { "number" : 15 }
-    { "number" : 16 }
-    { "number" : 17 }
-    { "number" : 18 }
-    { "number" : 19 }
-    Type "it" for more
+    { 'number' : 0 }
+    { 'number' : 1 }
+    { 'number' : 2 }
+    { 'number' : 3 }
+    { 'number' : 4 }
+    { 'number' : 5 }
+    { 'number' : 6 }
+    { 'number' : 7 }
+    { 'number' : 8 }
+    { 'number' : 9 }
+    { 'number' : 10 }
+    { 'number' : 11 }
+    { 'number' : 12 }
+    { 'number' : 13 }
+    { 'number' : 14 }
+    { 'number' : 15 }
+    { 'number' : 16 }
+    { 'number' : 17 }
+    { 'number' : 18 }
+    { 'number' : 19 }
+    Type 'it' for more
 
 Now we have a good number of documents we can see the batching behaviour of the cursor, only twenty documents are returned.  We iterate the cursor with the `it` command.
     
     > it
-    { "number" : 20 }
-    { "number" : 21 }
-    { "number" : 22 }
-    { "number" : 23 }
-    { "number" : 24 }
-    { "number" : 25 }
-    { "number" : 26 }
-    { "number" : 27 }
-    { "number" : 28 }
-    { "number" : 29 }
-    { "number" : 30 }
-    { "number" : 31 }
-    { "number" : 32 }
-    { "number" : 33 }
-    { "number" : 34 }
-    { "number" : 35 }
-    { "number" : 36 }
-    { "number" : 37 }
-    { "number" : 38 }
-    { "number" : 39 }
-    Type "it" for more
+    { 'number' : 20 }
+    { 'number' : 21 }
+    { 'number' : 22 }
+    { 'number' : 23 }
+    { 'number' : 24 }
+    { 'number' : 25 }
+    { 'number' : 26 }
+    { 'number' : 27 }
+    { 'number' : 28 }
+    { 'number' : 29 }
+    { 'number' : 30 }
+    { 'number' : 31 }
+    { 'number' : 32 }
+    { 'number' : 33 }
+    { 'number' : 34 }
+    { 'number' : 35 }
+    { 'number' : 36 }
+    { 'number' : 37 }
+    { 'number' : 38 }
+    { 'number' : 39 }
+    Type 'it' for more
 
 We can also load scripts into the shell.  If we have the following `hello.js` file:
 
@@ -384,7 +384,7 @@ Now we can call the function:
     
 JavaScript is powerful and might be an unacceptable attack vector.  You can prevent JavaScript from being executed by passing the `--noscripting` option when you start `mongod.exe`.  Scripting on the client is never prevented.
 
-### Importing and Exporting
+## Importing and Exporting
 
 Mongo has two exporting tools and two importing tools, to be used in pairs:
 
@@ -399,12 +399,12 @@ The first two work with JSON, the next two work with BSON and meta-data.  For a 
 
 This gives you a file like: 
 
-    {"_id":{"$oid":"5a5e1554c469f5667ecde31c"},"number":0}
-    {"_id":{"$oid":"5a5e1554c469f5667ecde31d"},"number":1}
-    {"_id":{"$oid":"5a5e1554c469f5667ecde31e"},"number":2}
+    {'_id':{'$oid':'5a5e1554c469f5667ecde31c'},'number':0}
+    {'_id':{'$oid':'5a5e1554c469f5667ecde31d'},'number':1}
+    {'_id':{'$oid':'5a5e1554c469f5667ecde31e'},'number':2}
     ...
-    {"_id":{"$oid":"5a5e1554c469f5667ecde703"},"number":998}
-    {"_id":{"$oid":"5a5e1554c469f5667ecde703"},"number":999}
+    {'_id':{'$oid':'5a5e1554c469f5667ecde703'},'number':998}
+    {'_id':{'$oid':'5a5e1554c469f5667ecde703'},'number':999}
     
  If we dump the collection instead of exporting it we'd use:
     
@@ -426,16 +426,16 @@ This gives us a directory with two files in it:
 The `names.bson` file contains all out data in BSON format.  The `names.metadata.json` file contains information about the collection so that it can be rebuilt accurately.  This on contains:
 
     {
-    	"options": {},
-    	"indexes": [{
-    		"v": 2,
-    		"key": {
-    			"_id": 1
-    		},
-    		"name": "_id_",
-    		"ns": "mongo_rocks.names"
-    	}],
-    	"uuid": "dc47a6aa6a0c4c368688c1cc7fa5775f"
+        'options': {},
+        'indexes': [{
+            'v': 2,
+            'key': {
+                '_id': 1
+            },
+            'name': '_id_',
+            'ns': 'mongo_rocks.names'
+        }],
+        'uuid': 'dc47a6aa6a0c4c368688c1cc7fa5775f'
     }
     
 We can see that there is a single index in this database.  It's called `_id_` and it's on the `_id` field ascending (descending would be a `-1` instead).
@@ -481,91 +481,91 @@ Now, for the last time, open the Mongo shell again.  Have a look around and sati
     10000
     > db.students.find().limit(1).pretty()
     {
-            "_id" : 1,
-            "personal" : {
-                    "gender" : "Male",
-                    "given_names" : [
-                            "Trent",
-                            "Paul"
+            '_id' : 1,
+            'personal' : {
+                    'gender' : 'Male',
+                    'given_names' : [
+                            'Trent',
+                            'Paul'
                     ],
-                    "surname" : "James",
-                    "date_of_birth" : ISODate("1984-04-28T23:00:00Z")
+                    'surname' : 'James',
+                    'date_of_birth' : ISODate('1984-04-28T23:00:00Z')
             },
-            "enrollments" : [
+            'enrollments' : [
                     {
-                            "start_date" : ISODate("2003-01-29T00:00:00Z"),
-                            "name" : "Psychology",
-                            "school" : "Humanities",
-                            "score" : 27
+                            'start_date' : ISODate('2003-01-29T00:00:00Z'),
+                            'name' : 'Psychology',
+                            'school' : 'Humanities',
+                            'score' : 27
                     },
                     {
-                            "start_date" : ISODate("2003-01-29T00:00:00Z"),
-                            "name" : "Malay",
-                            "school" : "Languages",
-                            "score" : 46
+                            'start_date' : ISODate('2003-01-29T00:00:00Z'),
+                            'name' : 'Malay',
+                            'school' : 'Languages',
+                            'score' : 46
                     },
                     {
-                            "start_date" : ISODate("2003-01-29T00:00:00Z"),
-                            "name" : "Product Design",
-                            "school" : "Technology",
-                            "score" : 46
+                            'start_date' : ISODate('2003-01-29T00:00:00Z'),
+                            'name' : 'Product Design',
+                            'school' : 'Technology',
+                            'score' : 46
                     },
                     {
-                            "start_date" : ISODate("2003-01-29T00:00:00Z"),
-                            "name" : "Social Science",
-                            "school" : "Humanities"
+                            'start_date' : ISODate('2003-01-29T00:00:00Z'),
+                            'name' : 'Social Science',
+                            'school' : 'Humanities'
                     },
                     {
-                            "start_date" : ISODate("2003-01-29T00:00:00Z"),
-                            "name" : "Law",
-                            "school" : "Humanities",
-                            "score" : 67
+                            'start_date' : ISODate('2003-01-29T00:00:00Z'),
+                            'name' : 'Law',
+                            'school' : 'Humanities',
+                            'score' : 67
                     },
                     {
-                            "start_date" : ISODate("2004-01-29T00:00:00Z"),
-                            "name" : "History",
-                            "school" : "Humanities",
-                            "score" : 84
+                            'start_date' : ISODate('2004-01-29T00:00:00Z'),
+                            'name' : 'History',
+                            'school' : 'Humanities',
+                            'score' : 84
                     },
                     {
-                            "start_date" : ISODate("2004-01-29T00:00:00Z"),
-                            "name" : "Home Economics: Food and Nutrition",
-                            "school" : "Humanities"
+                            'start_date' : ISODate('2004-01-29T00:00:00Z'),
+                            'name' : 'Home Economics: Food and Nutrition',
+                            'school' : 'Humanities'
                     },
                     {
-                            "start_date" : ISODate("2004-01-29T00:00:00Z"),
-                            "name" : "Classical Greek",
-                            "school" : "Languages",
-                            "score" : 93
+                            'start_date' : ISODate('2004-01-29T00:00:00Z'),
+                            'name' : 'Classical Greek',
+                            'school' : 'Languages',
+                            'score' : 93
                     },
                     {
-                            "start_date" : ISODate("2004-01-29T00:00:00Z"),
-                            "name" : "Electronics with Resistant Materials",
-                            "school" : "Technology",
-                            "score" : 54
+                            'start_date' : ISODate('2004-01-29T00:00:00Z'),
+                            'name' : 'Electronics with Resistant Materials',
+                            'school' : 'Technology',
+                            'score' : 54
                     },
                     {
-                            "start_date" : ISODate("2005-01-29T00:00:00Z"),
-                            "name" : "Gujarati",
-                            "school" : "Languages",
-                            "score" : 45
+                            'start_date' : ISODate('2005-01-29T00:00:00Z'),
+                            'name' : 'Gujarati',
+                            'school' : 'Languages',
+                            'score' : 45
                     },
                     {
-                            "start_date" : ISODate("2005-01-29T00:00:00Z"),
-                            "name" : "Japanese",
-                            "school" : "Languages",
-                            "score" : 98
+                            'start_date' : ISODate('2005-01-29T00:00:00Z'),
+                            'name' : 'Japanese',
+                            'school' : 'Languages',
+                            'score' : 98
                     },
                     {
-                            "start_date" : ISODate("2005-01-29T00:00:00Z"),
-                            "name" : "Information and Communication Technology (ICT)",
-                            "school" : "Technology",
-                            "score" : 76
+                            'start_date' : ISODate('2005-01-29T00:00:00Z'),
+                            'name' : 'Information and Communication Technology (ICT)',
+                            'school' : 'Technology',
+                            'score' : 76
                     }
             ]
     }
     
-### RoboMongo
+## RoboMongo
 
 You may use whatever GUI you want, or none at all if you love the Mongo shell but I'll be using RoboMongo, which is [available for free](https://robomongo.org/) and is provided with a [GNU LGPL](https://www.gnu.org/licenses/lgpl.html) so you can use it with a clean conscience.
 
@@ -607,6 +607,112 @@ Text view
 
 You can swap between them with the function keys:
 
-* F2 Tree view
-* F3 Table view
-* F4 Text view
+* `F2` Tree view
+* `F3` Table view
+* `F4` Text view
+
+# Managing Documents
+
+## Sample Data
+We're working with a pre-built collection called `students`.  There are `1000` documents containing personal information and information about courses they've enrolled in.
+
+The basic structure looks like this, though this can change from document to document:
+
+    {
+        '_id' : NumberInt,
+        'personal' : {
+            'gender' : String,
+            'given_names' : [ 
+                String
+            ],
+            'surname' : String,
+            'date_of_birth' : ISODate,
+        },
+        'enrollments' : [{
+            'start_date' :ISODate,
+            'name' : String,
+            'school' : String,
+            'score' : NumberInt
+        }]
+    }
+
+We're going to be going through working with these documents in some detail, with exercises thrown in.
+
+## Find by Value
+
+### Exercise One:  Find by ID
+
+As previously mentioned, every document in Mongo must have a unique primary key stored in the `_id` field.  To keep things easy I've given all the students an integer key from `1` to `1000`.
+
+> Find the document with an `_id` of 50.
+>
+> You should return Trudy Alice James
+
+## Nested Documents
+
+Nested documents present our first challenge.  Let's get all the female students, intuition may suggest that you can write a query like this:
+
+    db.students.find({
+        personal: {
+            gender: 'Female'
+        }
+    })
+
+However, if you run this then you'll only return one document that I've specifically put in so that it matches this query.
+
+    {
+        _id : 100,
+        personal : {
+            gender : 'Female'
+        },
+        enrollments: [ ... ]
+    }
+    
+The reason that this document is returned is because this structure tells Mongo that you want an exact match, that being a nested document in the `personal` field that contains only the `gender` field with the value `Female`.  The query we want is to find all the documents which have a nested `personal` document that contains a `gender` field with the value `Female`.  To do this we use the dot syntax:
+
+    db.students.find({
+        'personal.gender': 'Female'
+    })
+
+### Exercise Two:  Querying Nested Documents
+
+> Find all the students with the surname of `Roberts`.
+
+## Arrays
+
+Our student documents have two arrays, on contains strings, the other more documents.  Because we can't ever guarantee the data type of a field (or even it's existence), Mongo has some special rules for dealing with arrays of things.
+
+Consider the following three documents (`_id` removed):
+
+    /* 1 */
+    {
+        "foo" : 1
+    }
+    
+    /* 2 */
+    {
+        "foo" : [ 
+            1
+        ]
+    }
+    
+    /* 3 */
+    {
+        "foo" : [ 
+            3, 
+            2, 
+            1
+        ]
+    }
+    
+All of them have the integer `1` in the field, in some it's inside an array.  When we use the filter `{ foo: 1 }` however we actually return all three, this is because when Mongo reaches an array it will iterate through it looking for any match in the array.
+
+If we want to find an element in a specific position in an array then we can use an ordinal position with a dot delimiter `{ 'foo.0': 1 }`.  This will only return the documents where the the `1` is first element in the array.
+
+### Exercise Three:  Select array elements
+
+You have three tasks now:
+
+1. Find all the students with `Judy` as any of their names. (There's 582.)
+2. Find all the students with `Judy` as their first name. (There's 266.)
+3. Find all the students with `Judy` as their first name and `Grace` as their second name. (There's 17.)
