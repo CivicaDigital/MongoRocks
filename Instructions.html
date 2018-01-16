@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>README</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+/* GitHub stylesheet for MarkdownPad (http://markdownpad.com) */
+/* Author: Nicolas Hery - http://nicolashery.com */
+/* Version: b13fe65ca28d2e568c6ed5d7f06581183df8f2ff */
+/* Source: https://github.com/nicolahery/markdownpad-github */
+
+/* RESET
+=============================================================================*/
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* BODY
+=============================================================================*/
+
+body {
+  font-family: "Bitstream Vera Sans Mono", Helvetica, arial, freesans, clean, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+  background-color: #fff;
+  padding: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body>*:first-child {
+  margin-top: 0 !important;
+}
+
+body>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* BLOCKS
+=============================================================================*/
+
+p, blockquote, ul, ol, dl, table, pre {
+  margin: 15px 0;
+}
+
+/* HEADERS
+=============================================================================*/
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 tt, h1 code, h2 tt, h2 code, h3 tt, h3 code, h4 tt, h4 code, h5 tt, h5 code, h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #000;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #ccc;
+  color: #000;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  font-size: 16px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+h6 {
+  color: #777;
+  font-size: 14px;
+}
+
+body>h2:first-child, body>h1:first-child, body>h1:first-child+h2, body>h3:first-child, body>h4:first-child, body>h5:first-child, body>h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1+p, h2+p, h3+p, h4+p, h5+p, h6+p {
+  margin-top: 10px;
+}
+
+/* LINKS
+=============================================================================*/
+
+a {
+  color: #4183C4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* LISTS
+=============================================================================*/
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul li > :first-child, 
+ol li > :first-child, 
+ul li ul:first-of-type, 
+ol li ol:first-of-type, 
+ul li ol:first-of-type, 
+ol li ul:first-of-type {
+  margin-top: 0px;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt>:first-child {
+  margin-top: 0px;
+}
+
+dl dt>:last-child {
+  margin-bottom: 0px;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd>:first-child {
+  margin-top: 0px;
+}
+
+dl dd>:last-child {
+  margin-bottom: 0px;
+}
+
+/* CODE
+=============================================================================*/
+
+pre, code, tt {
+  font-size: 12px;
+  font-family: Consolas, "Liberation Mono", Courier, monospace;
+}
+
+code, tt {
+  margin: 0 0px;
+  padding: 0px 0px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+
+pre>code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+
+pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+kbd {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #DDDDDD;
+    background-image: linear-gradient(#F1F1F1, #DDDDDD);
+    background-repeat: repeat-x;
+    border-color: #DDDDDD #CCCCCC #CCCCCC #DDDDDD;
+    border-image: none;
+    border-radius: 2px 2px 2px 2px;
+    border-style: solid;
+    border-width: 1px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    line-height: 10px;
+    padding: 1px 4px;
+}
+
+/* QUOTES
+=============================================================================*/
+
+blockquote {
+  border-left: 4px solid #DDD;
+  padding: 0 15px;
+  color: #777;
+}
+
+blockquote>:first-child {
+  margin-top: 0px;
+}
+
+blockquote>:last-child {
+  margin-bottom: 0px;
+}
+
+/* HORIZONTAL RULES
+=============================================================================*/
+
+hr {
+  clear: both;
+  margin: 15px 0;
+  height: 0px;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  border-bottom: 4px solid #ddd;
+  padding: 0;
+}
+
+/* TABLES
+=============================================================================*/
+
+table th {
+  font-weight: bold;
+}
+
+table th, table td {
+  border: 1px solid #ccc;
+  padding: 6px 13px;
+}
+
+table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* IMAGES
+=============================================================================*/
+
+img {
+  max-width: 100%
+}
+</style>
+</head>
+<body>
+<h1>Mongo Rocks</h1>
+<h2>Prerequisites</h2>
+<p>You'll need to have the following ready to go:</p>
+<ol>
+<li>MongoDB (3.6 or above) -  Get is from the <a href="https://www.mongodb.com/download-center?community#community">MongoDB Download Centre</a>.</li>
+<li>A GUI - There are a few, my favourite is <a href="https://robomongo.org/download">RoboMongo</a>.</li>
+</ol>
+<h2>Getting started</h2>
+<h3>Running MongoDB</h3>
+<p>Mongo will install (by default) in:</p>
+<p>C:\Program Files\MongoDB\Server&lt;Version&gt;\bin</p>
+<p>Navigating to this you'll see all the interesting files for working with Mongo.</p>
+<ul>
+<li><code>bsondump.exe</code></li>
+<li><code>mongo.exe</code></li>
+<li><code>mongod.exe</code></li>
+<li><code>mongod.pdb</code></li>
+<li><code>mongodump.exe</code></li>
+<li><code>mongoexport.exe</code></li>
+<li><code>mongofiles.exe</code></li>
+<li><code>mongoimport.exe</code></li>
+<li><code>mongoperf.exe</code></li>
+<li><code>mongorestore.exe</code></li>
+<li><code>mongos.exe</code></li>
+<li><code>mongos.pdb</code></li>
+<li><code>mongostat.exe</code></li>
+<li><code>mongotop.exe</code></li>
+</ul>
+<p><code>mongod.exe</code> is the Mongo server, we can run it either as a service (as it would be in production) or as a console application (which is easier when you're playing about with it).  </p>
+<p>By default it will:</p>
+<ul>
+<li>Listen for local connections on port <code>27027</code>.</li>
+<li>Store files in <code>C:\data\db\</code></li>
+<li>Run without any authentication.</li>
+<li>Will use the WiredTiger database engine.</li>
+</ul>
+<p><code>mongod.exe</code> will accept arguments to change these and other settings, <code>mongod.exe --help</code> will list them all out.  We're not going to use the default file storage location, when trying stuff out it's good to have it somewhere else so you can simply delete the directory when you're finished without affecting anything else.</p>
+<p>Create <code>C:\MongoRocksData</code>.  Now run <code>mongod.exe --dbpath C:\MongoRocksData</code>.  You'll see a wealth of information including warnings about running in a non-production-safe way:</p>
+<pre><code>** WARNING: Access control is not enabled for the database.
+**          Read and write access to data and configuration is unrestricted.
+** WARNING: This server is bound to localhost.
+**          Remote systems will be unable to connect to this server.
+**          Start the server with --bind_ip &lt;address&gt; to specify which IP
+**          addresses it should serve responses from, or with --bind_ip_all to
+**          bind to all interfaces. If this behavior is desired, start the
+**          server with --bind_ip 127.0.0.1 to disable this warning.
+</code></pre>
+
+<p>Soon afterwards you should see that Mongo is up and listening for connections:</p>
+<pre><code>createCollection: admin.system.version with provided UUID: d6efacd2-c7cb-4ca7-b1ca-03d9ef8ad0ae
+setting featureCompatibilityVersion to 3.6
+createCollection: local.startup_log with generated UUID: d061fc00-0b2a-46b1-b86c-9e447f25c98d
+Initializing full-time diagnostic data capture with directory 'C:/MongoRocksData/diagnostic.data'
+waiting for connections on port 27017
+</code></pre>
+
+<p>Now we're ready to connect.</p>
+<h2>Connecting to a MongoDB Server</h2>
+<p><code>mongo.exe</code> provides us with a CLI to work with Mongo (there are drivers for languages and GUIs available as well, we'll work with the CLI for a bit though).  By default <code>mongo.exe</code> will:</p>
+<ul>
+<li>Try to connect at <code>localhost:27027</code>.</li>
+<li>Will not authenticate.</li>
+</ul>
+<p>So, we want the defaults so just run <code>mongo.exe</code> then we'll firstly see more logs appear on the server's output:</p>
+<pre><code>[listener] connection accepted from 127.0.0.1:59218 #1 (1 connection now open)
+[conn1] received client metadata from 127.0.0.1:59218 conn: 
+{ 
+    application: { 
+        name: &quot;MongoDB Shell&quot; 
+    }, 
+    driver: { 
+        name: &quot;MongoDB Internal Client&quot;, 
+        version: &quot;3.6.0&quot; 
+    }, os: { 
+        type: &quot;Windows&quot;, 
+        name: &quot;Microsoft Windows 10&quot;, 
+        architecture: &quot;x86_64&quot;, 
+        version: &quot;10.0 (build 14393)&quot; 
+    } 
+}
+</code></pre>
+
+<blockquote>
+<p>NB:  I've formatted the output so that it's readable.</p>
+</blockquote>
+<p>We'll also see that the client has written some warning about this not being a recommended configuration as well as the command prompt change to indicate that its waiting for input.</p>
+<h2>CRUD</h2>
+<h3>Databases &amp; Collections</h3>
+<p>Data in Mongo is contained <em>collections</em> which are in <em>databases</em>.  There can be many databases on any server and each database can contain many collections.</p>
+<p>Firstly let's see what databases exist by default.</p>
+<pre><code>&gt; show dbs
+admin   0.000GB
+config  0.000GB
+local   0.000GB
+</code></pre>
+
+<p>These all have roles to play but are not used to store you documents, in fact if you were to put them in any of these databases than they may well get deleted or the server might just break.</p>
+<p>Creating databases and collections is done implicitly.  If you try to write to a database and\or collection that doesn't exist then it'll just get created.</p>
+<p>When we're working in the shell we'll always to working in the context of a single database.  The reference to that database is stored in the <code>db</code> variable.  Just type <code>db</code> to see what it's pointing to:</p>
+<pre><code>&gt; db
+test
+</code></pre>
+
+<p>When the Mongo client first connects to a server it will always be in the context of the <code>test</code> database.  <code>test</code> doesn't exist, but that doesn't matter because it will be created when it's needed.</p>
+<p>To change the database context you're working in (i.e. the value of <code>db</code>) use the <code>use &lt;database_name&gt;</code> command.</p>
+<pre><code>&gt; use mongo_rocks
+switched to db mongo_rocks
+</code></pre>
+
+<p>We can see what collections are in a database with <code>show collections</code>.  There aren't any yet, there will be soon.</p>
+<h3>BSON Documents</h3>
+<p>BSON is the format that Mongo stores and retrieved data in.  Based on JSON, BSON is is nested structure that contains key/value pairs of objects, arrays and data types.  Unlike JSON, BSON is not a text file.  BSON also supports more data types than JSON, these are described in the <a href="https://docs.mongodb.com/manual/reference/bson-types/">MongoDB documentation</a> and in the <a href="http://bsonspec.org/spec.html">BSON Specification</a>.  In BSON language, the data structure is referred to as a <em>document</em>, as are all objects in the document (_nested documents_).</p>
+<blockquote>
+<p>JSON is not completely a subset of BSON as BSON doesn't allow <code>0x00</code> character.  BSON reserves <code>0x00</code> for control purposes such as string termination.</p>
+</blockquote>
+<p>Take this BSON document:</p>
+<pre><code>{
+    &quot;_id&quot; : ObjectId(&quot;0123456789abcdef01234567&quot;),
+    &quot;name&quot; : &quot;David&quot;
+}
+</code></pre>
+
+<p><code>ObjectId</code> is not valid JSON.  This is a BSON object similar to a GUID, but optimised for generation speed over guaranteed uniqueness.  If a document is created without an <code>_id</code> field then Mongo will create one and assign it a new <code>ObjectId</code>.  </p>
+<p>The BSON file created for this would have this structure:</p>
+<table>
+<thead>
+<tr>
+	<th>Description</th>
+	<th>Bytes</th>
+	<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+	<td>File size</td>
+	<td><code>26</code> <code>00</code> <code>00</code> <code>00</code></td>
+	<td><code>38</code></td>
+</tr>
+<tr>
+	<td>Data type</td>
+	<td><code>07</code></td>
+	<td><em>ObjectId</em></td>
+</tr>
+<tr>
+	<td>Field name</td>
+	<td><code>5F</code> <code>69</code> <code>64</code></td>
+	<td><code>_id</code></td>
+</tr>
+<tr>
+	<td>String terminator</td>
+	<td><code>00</code></td>
+	<td></td>
+</tr>
+<tr>
+	<td>Field Value</td>
+	<td><code>01</code> <code>23</code> <code>45</code> <code>67</code> <code>89</code> <code>AB</code> <code>CD</code> <code>EF</code> <code>01</code> <code>23</code> <code>45</code> <code>67</code></td>
+	<td><code>0123456789ABCDEF01234567</code></td>
+</tr>
+<tr>
+	<td>Data type</td>
+	<td><code>02</code></td>
+	<td><em>String</em></td>
+</tr>
+<tr>
+	<td>Field name</td>
+	<td><code>6E</code> <code>61</code> <code>6D</code> <code>65</code></td>
+	<td><code>name</code></td>
+</tr>
+<tr>
+	<td>String terminator</td>
+	<td><code>00</code></td>
+	<td></td>
+</tr>
+<tr>
+	<td>Field Length</td>
+	<td><code>06</code> <code>00</code> <code>00</code> <code>00</code></td>
+	<td><code>6</code></td>
+</tr>
+<tr>
+	<td>Field value</td>
+	<td><code>44</code> <code>61</code> <code>76</code> <code>69</code> <code>64</code></td>
+	<td><code>David</code></td>
+</tr>
+<tr>
+	<td>String terminator</td>
+	<td><code>00</code></td>
+	<td></td>
+</tr>
+<tr>
+	<td>Object terminator</td>
+	<td><code>00</code></td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>NB: There is a 64Mb limit on any document size.</p>
+</blockquote>
+<p>Mongo provides tooling to export the document to JSON, when it does it used some JSON compliant structures to capture data types that are not JSON compliant.</p>
+<p>The above document would be serialised to JSON like so:</p>
+<pre><code>{
+    &quot;_id&quot;: {
+        &quot;$oid&quot;:&quot;0123456789abcdef01234567&quot;
+    },
+    &quot;name&quot;:&quot;David&quot;
+}
+</code></pre>
+
+<h3>Inserting Documents</h3>
+<p>Let's insert a document into a collection called <code>names</code> in a database called <code>mongo_rocks</code>:</p>
+<pre><code>&gt; use mongo_rocks
+switched to db mongo_rocks
+&gt; db.names.insert({
+... _id: NumberInt(1),
+... name: 'David'
+... })
+WriteResult({ &quot;nInserted&quot; : 1 })
+</code></pre>
+
+<p>Every document needs a unique ID, this is always the <code>_id</code> field.  If you don't set it explicitly then Mongo will create a new <code>ObjectId</code> and assign its value to it.</p>
+<p>We can also add an array of documents (as long as the total doesn't exceed 64 Mb):</p>
+<pre><code>&gt; db.names.insertMany([{
+... _id: NumberInt(2),
+... name: 'Alice'
+... }, {
+... _id: NumberInt(3),
+... name: 'Bob'
+... }, {
+... _id: NumberInt(4),
+... name: 'Charlie'
+... }])
+{
+        &quot;acknowledged&quot; : true,
+        &quot;insertedIds&quot; : [
+                NumberInt(2),
+                NumberInt(3),
+                NumberInt(4)
+        ]
+}
+</code></pre>
+
+<p>When we add many, we get the <code>_id</code> fields returned to us.  If we try to insert a duplicate <code>_id</code> then we get an exception:</p>
+<pre><code>&gt; db.names.insert({
+... _id: NumberInt(2),
+... name: 'Eve'
+... })
+WriteResult({
+        &quot;nInserted&quot; : 0,
+        &quot;writeError&quot; : {
+                &quot;code&quot; : 11000,
+                &quot;errmsg&quot; : &quot;E11000 duplicate key error collection: test.names index: _id_ dup key: { : 2 }&quot;
+        }
+})
+</code></pre>
+
+<h3>Retrieving Documents</h3>
+<p>We use the find method to retrieve documents, or rather we use the cursor returned by the find method.  The method has the syntax:</p>
+<pre><code>find(&lt;filter&gt;, &lt;projection&gt;)
+</code></pre>
+
+<p>Both the filter and the projection are optional.</p>
+<p>To retrieve all the documents we just call the find with either no arguments, or with an empty object.</p>
+<pre><code>&gt; db.names.find()
+{ &quot;_id&quot; : 1, &quot;name&quot; : &quot;David&quot; }
+{ &quot;_id&quot; : 2, &quot;name&quot; : &quot;Alice&quot; }
+{ &quot;_id&quot; : 3, &quot;name&quot; : &quot;Bob&quot; }
+{ &quot;_id&quot; : 4, &quot;name&quot; : &quot;Charlie&quot; }
+</code></pre>
+
+<p>The reason that we're seeing the documents, rather than seeing a cursor is because the client is figuring out that we probably want to get the documents, therefore it's iterating the documents with the cursor and displaying them without you having to tell it too.  We'll see later that this doesn't happen when there are a lot of documents returned.</p>
+<p>The projection object tells the server what fields we want to see.  We have the option to either give it a white-list or a black-list (not both).  For example, if we only wanted to see the <code>_id</code> field then we'd pass:</p>
+<pre><code>&gt; db.names.find({}, {
+... _id: 1
+... })
+{ &quot;_id&quot; : 1 }
+{ &quot;_id&quot; : 2 }
+{ &quot;_id&quot; : 3 }
+{ &quot;_id&quot; : 4 }
+</code></pre>
+
+<p>If we wanted to exclude the <code>_id</code> field then we'd pass a <code>0</code> instead:</p>
+<pre><code>&gt; db.names.find({}, {
+... _id: 0
+... })
+{ &quot;name&quot; : &quot;David&quot; }
+{ &quot;name&quot; : &quot;Alice&quot; }
+{ &quot;name&quot; : &quot;Bob&quot; }
+{ &quot;name&quot; : &quot;Charlie&quot; }
+</code></pre>
+
+<p>There is a <em>gotcha</em> here,  The <code>_id</code> field is always returned unless you explicitly exclude it.  So to get only the names we need to pass both the <code>name</code> field and the <code>_id</code> field to the projection:</p>
+<pre><code>&gt; db.names.find({}, {
+... _id: 0,
+... name: 1
+... })
+{ &quot;name&quot; : &quot;David&quot; }
+{ &quot;name&quot; : &quot;Alice&quot; }
+{ &quot;name&quot; : &quot;Bob&quot; }
+{ &quot;name&quot; : &quot;Charlie&quot; }
+</code></pre>
+
+<blockquote>
+<p>NB:  This is the only example of <code>1</code> and <code>0</code> appearing in the projection.</p>
+</blockquote>
+<p>We can search for specific documents by providing a filter document:</p>
+<pre><code>&gt; db.names.find({
+... name: 'David'
+... }
+... )
+{ &quot;_id&quot; : 1, &quot;name&quot; : &quot;David&quot; }
+</code></pre>
+
+<h3>Removing Documents</h3>
+<p>Removing documents is similar to finding them.  We pass in a the same filter object as we would when finding and also an options object.  There is a is safety feature though, the filter object isn't optional (to prevent you from the accidental pressing of go and deleting the entire database).</p>
+<pre><code>db.names.remove(&lt;filter&gt;)
+</code></pre>
+
+<h3>Updating Documents</h3>
+<p>Updating documents requires two arguments.  Firstly a filter to determine which documents the update affects and secondly a document describing what the update to perform is.</p>
+<blockquote>
+<p>NB: By default update will only affect the first document, we have to tell it if we don't want this constraint.</p>
+</blockquote>
+<p>If we wanted to add a date of birth to Alice we could write:</p>
+<pre><code>&gt; db.names.update({
+... name: 'Alice'
+... }, {
+... $set: {
+... date_of_birth: ISODate('30-01-1995')
+... }
+... })
+WriteResult({ &quot;nMatched&quot; : 1, &quot;nUpserted&quot; : 0, &quot;nModified&quot; : 1 })
+</code></pre>
+
+<p>Notice the use of the <code>$set</code> operator field.  This tells Mongo that you want to insert a new field, without it Mongo would think that you wanted to replace the whole document.</p>
+<pre><code>&gt; db.names.find({
+... name: 'Alice'
+... })
+{ &quot;_id&quot; : 2, &quot;name&quot; : &quot;Alice&quot;, &quot;date_of_birth&quot; : ISODate(&quot;1995-01-30T00:00:00Z&quot;) }
+</code></pre>
+
+<h3>Scripting</h3>
+<p>The Mongo client will execute arbitrary JavaScript.  For example, we could write a loop to add 1000 documents:</p>
+<pre><code>&gt; for(var i = 0; i &lt; 1000; i++) {
+... db.names.insert({number: NumberInt(i)});
+... }
+WriteResult({ &quot;nInserted&quot; : 1 })
+</code></pre>
+
+<p>When we search now we see lots of documents:</p>
+<pre><code>&gt; db.names.find({}, {_id: 0})
+{ &quot;number&quot; : 0 }
+{ &quot;number&quot; : 1 }
+{ &quot;number&quot; : 2 }
+{ &quot;number&quot; : 3 }
+{ &quot;number&quot; : 4 }
+{ &quot;number&quot; : 5 }
+{ &quot;number&quot; : 6 }
+{ &quot;number&quot; : 7 }
+{ &quot;number&quot; : 8 }
+{ &quot;number&quot; : 9 }
+{ &quot;number&quot; : 10 }
+{ &quot;number&quot; : 11 }
+{ &quot;number&quot; : 12 }
+{ &quot;number&quot; : 13 }
+{ &quot;number&quot; : 14 }
+{ &quot;number&quot; : 15 }
+{ &quot;number&quot; : 16 }
+{ &quot;number&quot; : 17 }
+{ &quot;number&quot; : 18 }
+{ &quot;number&quot; : 19 }
+Type &quot;it&quot; for more
+</code></pre>
+
+<p>Now we have a good number of documents we can see the batching behaviour of the cursor, only twenty documents are returned.  We iterate the cursor with the <code>it</code> command.</p>
+<pre><code>&gt; it
+{ &quot;number&quot; : 20 }
+{ &quot;number&quot; : 21 }
+{ &quot;number&quot; : 22 }
+{ &quot;number&quot; : 23 }
+{ &quot;number&quot; : 24 }
+{ &quot;number&quot; : 25 }
+{ &quot;number&quot; : 26 }
+{ &quot;number&quot; : 27 }
+{ &quot;number&quot; : 28 }
+{ &quot;number&quot; : 29 }
+{ &quot;number&quot; : 30 }
+{ &quot;number&quot; : 31 }
+{ &quot;number&quot; : 32 }
+{ &quot;number&quot; : 33 }
+{ &quot;number&quot; : 34 }
+{ &quot;number&quot; : 35 }
+{ &quot;number&quot; : 36 }
+{ &quot;number&quot; : 37 }
+{ &quot;number&quot; : 38 }
+{ &quot;number&quot; : 39 }
+Type &quot;it&quot; for more
+</code></pre>
+
+<p>We can also load scripts into the shell.  If we have the following <code>hello.js</code> file:</p>
+<pre><code>function Hello(name) {
+    print('Hello ' + name + '!');
+}
+</code></pre>
+
+<p>We can load it into the shell:</p>
+<pre><code>&gt; load('.../hello-world.js')
+true
+</code></pre>
+
+<p>Now we can call the function:</p>
+<pre><code>&gt; Hello('Dave')
+Hello Dave!
+</code></pre>
+
+<p>JavaScript is powerful and might be an unacceptable attack vector.  You can prevent JavaScript from being executed by passing the <code>--noscripting</code> option when you start <code>mongod.exe</code>.  Scripting on the client is never prevented.</p>
+<h3>Importing and Exporting</h3>
+<p>Mongo has two exporting tools and two importing tools, to be used in pairs:</p>
+<ul>
+<li><code>mongoexport.exe</code> &amp; <code>mongoimport.exe</code></li>
+<li><code>mongodump.exe</code> &amp; <code>mongorestore.exe</code></li>
+</ul>
+<p>The first two work with JSON, the next two work with BSON and meta-data.  For a full backup/restore you need to use the second pair.  Not only will it include the data in native BSON but it will also include the indexes etc.</p>
+<pre><code>...&gt;mongoexport --collection names --out .\names-export.json
+2018-01-16T15:49:21.203+0000    connected to: localhost
+2018-01-16T15:49:21.254+0000    exported 1000 records
+</code></pre>
+
+<p>This gives you a file like: </p>
+<pre><code>{&quot;_id&quot;:{&quot;$oid&quot;:&quot;5a5e1554c469f5667ecde31c&quot;},&quot;number&quot;:0}
+{&quot;_id&quot;:{&quot;$oid&quot;:&quot;5a5e1554c469f5667ecde31d&quot;},&quot;number&quot;:1}
+{&quot;_id&quot;:{&quot;$oid&quot;:&quot;5a5e1554c469f5667ecde31e&quot;},&quot;number&quot;:2}
+...
+{&quot;_id&quot;:{&quot;$oid&quot;:&quot;5a5e1554c469f5667ecde703&quot;},&quot;number&quot;:998}
+{&quot;_id&quot;:{&quot;$oid&quot;:&quot;5a5e1554c469f5667ecde703&quot;},&quot;number&quot;:999}
+</code></pre>
+
+<p>If we dump the collection instead of exporting it we'd use:</p>
+<pre><code>...&gt;mongodump --db mongo_rocks --collection names --out .\names-export
+2018-01-16T15:52:58.138+0000    writing mongo_rocks.names to
+2018-01-16T15:52:58.151+0000    done dumping mongo_rocks.names (1 document)
+</code></pre>
+
+<p>This gives us a directory with two files in it:</p>
+<pre><code>...&gt;tree names-export /a /f
+Folder PATH listing for volume OS
+Volume serial number is DEB6-B9B1
+C:\USERS\D.BANKS\DOCUMENTS\DEVELOPMENT\NAMES-EXPORT
+\---mongo_rocks
+        names.bson
+        names.metadata.json
+</code></pre>
+
+<p>The <code>names.bson</code> file contains all out data in BSON format.  The <code>names.metadata.json</code> file contains information about the collection so that it can be rebuilt accurately.  This on contains:</p>
+<pre><code>{
+    &quot;options&quot;: {},
+    &quot;indexes&quot;: [{
+        &quot;v&quot;: 2,
+        &quot;key&quot;: {
+            &quot;_id&quot;: 1
+        },
+        &quot;name&quot;: &quot;_id_&quot;,
+        &quot;ns&quot;: &quot;mongo_rocks.names&quot;
+    }],
+    &quot;uuid&quot;: &quot;dc47a6aa6a0c4c368688c1cc7fa5775f&quot;
+}
+</code></pre>
+
+<p>We can see that there is a single index in this database.  It's called <code>_id_</code> and it's on the <code>_id</code> field ascending (descending would be a <code>-1</code> instead).</p>
+<p>We've going to clear the database and restore one that's already made.  In the shell, make sure you're in the <code>mongo_rocks</code> database and issue this command:</p>
+<pre><code>&gt; show dbs
+admin        0.000GB
+config       0.000GB
+local        0.000GB
+mongo_rocks  0.002GB
+&gt; use mongo_rocks
+switched to db mongo_rocks
+&gt; db.dropDatabase()
+&gt; show dbs
+admin   0.000GB
+config  0.000GB
+local   0.000GB
+</code></pre>
+
+<p>Now restore from the <code>mongo-rocks-dump</code> directory (download it compressed from <a href="https://bitbucket.org/BanksySan/mongorocks/downloads/mongo-rocks-dump.v1.zip">here</a> and uncompress it). </p>
+<pre><code>...&gt; mongorestore --nsInclude mongo_rocks.students mongo_rocks\mongo-rocks-dump
+preparing collections to restore from
+reading metadata for mongo_rocks.students from mongo_rocks\mongo-rocks-dump\mongo_rocks\students.metadata.json
+restoring mongo_rocks.students from mongo_rocks\mongo-rocks-dump\mongo_rocks\students.bson
+no indexes to restore
+finished restoring mongo_rocks.students (10000 documents)
+done
+</code></pre>
+
+<p>Now, for the last time, open the Mongo shell again.  Have a look around and satisfy yourself that it's in good order:</p>
+<pre><code>&gt; show dbs
+admin        0.000GB
+config       0.000GB
+local        0.000GB
+mongo_rocks  0.002GB
+&gt; use mongo_rocks
+switched to db mongo_rocks
+&gt; show collections
+students
+&gt; db.students.find().count()
+10000
+&gt; db.students.find().limit(1).pretty()
+{
+        &quot;_id&quot; : 1,
+        &quot;personal&quot; : {
+                &quot;gender&quot; : &quot;Male&quot;,
+                &quot;given_names&quot; : [
+                        &quot;Trent&quot;,
+                        &quot;Paul&quot;
+                ],
+                &quot;surname&quot; : &quot;James&quot;,
+                &quot;date_of_birth&quot; : ISODate(&quot;1984-04-28T23:00:00Z&quot;)
+        },
+        &quot;enrollments&quot; : [
+                {
+                        &quot;start_date&quot; : ISODate(&quot;2003-01-29T00:00:00Z&quot;),
+                        &quot;name&quot; : &quot;Psychology&quot;,
+                        &quot;school&quot; : &quot;Humanities&quot;,
+                        &quot;score&quot; : 27
+                },
+                {
+                        &quot;start_date&quot; : ISODate(&quot;2003-01-29T00:00:00Z&quot;),
+                        &quot;name&quot; : &quot;Malay&quot;,
+                        &quot;school&quot; : &quot;Languages&quot;,
+                        &quot;score&quot; : 46
+                },
+                {
+                        &quot;start_date&quot; : ISODate(&quot;2003-01-29T00:00:00Z&quot;),
+                        &quot;name&quot; : &quot;Product Design&quot;,
+                        &quot;school&quot; : &quot;Technology&quot;,
+                        &quot;score&quot; : 46
+                },
+                {
+                        &quot;start_date&quot; : ISODate(&quot;2003-01-29T00:00:00Z&quot;),
+                        &quot;name&quot; : &quot;Social Science&quot;,
+                        &quot;school&quot; : &quot;Humanities&quot;
+                },
+                {
+                        &quot;start_date&quot; : ISODate(&quot;2003-01-29T00:00:00Z&quot;),
+                        &quot;name&quot; : &quot;Law&quot;,
+                        &quot;school&quot; : &quot;Humanities&quot;,
+                        &quot;score&quot; : 67
+                },
+                {
+                        &quot;start_date&quot; : ISODate(&quot;2004-01-29T00:00:00Z&quot;),
+                        &quot;name&quot; : &quot;History&quot;,
+                        &quot;school&quot; : &quot;Humanities&quot;,
+                        &quot;score&quot; : 84
+                },
+                {
+                        &quot;start_date&quot; : ISODate(&quot;2004-01-29T00:00:00Z&quot;),
+                        &quot;name&quot; : &quot;Home Economics: Food and Nutrition&quot;,
+                        &quot;school&quot; : &quot;Humanities&quot;
+                },
+                {
+                        &quot;start_date&quot; : ISODate(&quot;2004-01-29T00:00:00Z&quot;),
+                        &quot;name&quot; : &quot;Classical Greek&quot;,
+                        &quot;school&quot; : &quot;Languages&quot;,
+                        &quot;score&quot; : 93
+                },
+                {
+                        &quot;start_date&quot; : ISODate(&quot;2004-01-29T00:00:00Z&quot;),
+                        &quot;name&quot; : &quot;Electronics with Resistant Materials&quot;,
+                        &quot;school&quot; : &quot;Technology&quot;,
+                        &quot;score&quot; : 54
+                },
+                {
+                        &quot;start_date&quot; : ISODate(&quot;2005-01-29T00:00:00Z&quot;),
+                        &quot;name&quot; : &quot;Gujarati&quot;,
+                        &quot;school&quot; : &quot;Languages&quot;,
+                        &quot;score&quot; : 45
+                },
+                {
+                        &quot;start_date&quot; : ISODate(&quot;2005-01-29T00:00:00Z&quot;),
+                        &quot;name&quot; : &quot;Japanese&quot;,
+                        &quot;school&quot; : &quot;Languages&quot;,
+                        &quot;score&quot; : 98
+                },
+                {
+                        &quot;start_date&quot; : ISODate(&quot;2005-01-29T00:00:00Z&quot;),
+                        &quot;name&quot; : &quot;Information and Communication Technology (ICT)&quot;,
+                        &quot;school&quot; : &quot;Technology&quot;,
+                        &quot;score&quot; : 76
+                }
+        ]
+}
+</code></pre>
+
+
+</body>
+</html>
+<!-- This document was created with MarkdownPad, the Markdown editor for Windows (http://markdownpad.com) -->
