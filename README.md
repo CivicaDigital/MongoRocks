@@ -564,3 +564,49 @@ Now, for the last time, open the Mongo shell again.  Have a look around and sati
                     }
             ]
     }
+    
+### RoboMongo
+
+You may use whatever GUI you want, or none at all if you love the Mongo shell but I'll be using RoboMongo, which is [available for free](https://robomongo.org/) and is provided with a [GNU LGPL](https://www.gnu.org/licenses/lgpl.html) so you can use it with a clean conscience.
+
+After installing it you'll be presented with an empty window for you to define a connection.
+
+![](https://bytebucket.org/BanksySan/banksysan.content/raw/a5859dcc91f976de72cb9375f3f2d63eefefc804/mongodb-workshop/robomongo/robomongo-connections-window-empty.PNG)
+
+Click an `Create` and you'll be presented with the `Connection Settings` dialogue.
+
+![](https://bytebucket.org/BanksySan/banksysan.content/raw/a5859dcc91f976de72cb9375f3f2d63eefefc804/mongodb-workshop/robomongo/new-connection-window-connection-tab.PNG)
+
+The default settings are all correct (unless you have changed something), I'll rename the connection to `default` though.
+
+Click `Test` and you'll hopefully get a response telling you that everything's as expected.
+
+![](https://bytebucket.org/BanksySan/banksysan.content/raw/a5859dcc91f976de72cb9375f3f2d63eefefc804/mongodb-workshop/robomongo/test-connection-passed.PNG)
+
+Click `Close` on this window and then `Save` on the `Connection Settings` window and you should see the connection listed.
+
+![](https://bytebucket.org/BanksySan/banksysan.content/raw/a5859dcc91f976de72cb9375f3f2d63eefefc804/mongodb-workshop/robomongo/robomongo-connections-window-default-connection.PNG)
+
+Click `Connect` and you should be presented with a window on the left showing the databases and, if you drill into them, the collection we've created.
+
+![](https://bytebucket.org/BanksySan/banksysan.content/raw/a5859dcc91f976de72cb9375f3f2d63eefefc804/mongodb-workshop/robomongo/tree-view-of-server.PNG)
+
+Right clicking on the collection and selecting `View Documents` will give you the documents (paginated fifty per page) in one of three formats:
+
+Tree view
+
+![](https://bytebucket.org/BanksySan/banksysan.content/raw/a5859dcc91f976de72cb9375f3f2d63eefefc804/mongodb-workshop/robomongo/tree-view-of-documents.PNG)
+
+Table view
+
+![](https://bytebucket.org/BanksySan/banksysan.content/raw/a5859dcc91f976de72cb9375f3f2d63eefefc804/mongodb-workshop/robomongo/table-view-of-server.PNG)
+
+Text view
+
+![](https://bytebucket.org/BanksySan/banksysan.content/raw/a5859dcc91f976de72cb9375f3f2d63eefefc804/mongodb-workshop/robomongo/text-view-of-server.PNG)
+
+You can swap between them with the function keys:
+
+* <kdb>F2</kbd> Tree view
+* <kdb>F3</kbd> Table view
+* <kdb>F4</kbd> Text view
