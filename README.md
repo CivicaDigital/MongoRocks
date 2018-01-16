@@ -607,6 +607,6 @@ Text view
 
 You can swap between them with the function keys:
 
-* <kdb>F2</kbd> Tree view
-* <kdb>F3</kbd> Table view
-* <kdb>F4</kbd> Text view
+* F2 Tree view
+* F3 Table view
+* F4 Text view
