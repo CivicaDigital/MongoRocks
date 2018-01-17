@@ -6,6 +6,7 @@ You'll need to have the following ready to go:
 
 1. MongoDB (3.6 or above) -  Get is from the [MongoDB Download Centre](https://www.mongodb.com/download-center?community#community).
 2. A GUI - There are a few, my favourite is [RoboMongo](https://robomongo.org/download).
+3. The sample data from my [Git repo](https://bitbucket.org/BanksySan/mongorocks/downloads/).
 
 ## Running MongoDB
 Mongo will install (by default) in:
@@ -235,6 +236,7 @@ To retrieve all the documents we just call the find with either no arguments, or
 
 The reason that we're seeing the documents, rather than seeing a cursor is because the client is figuring out that we probably want to get the documents, therefore it's iterating the documents with the cursor and displaying them without you having to tell it too.  We'll see later that this doesn't happen when there are a lot of documents returned.
 
+## Projection
 The projection object tells the server what fields we want to see.  We have the option to either give it a white-list or a black-list (not both).  For example, if we only wanted to see the `_id` field then we'd pass:
 
     > db.names.find({}, {
@@ -491,7 +493,7 @@ Now, for the last time, open the Mongo shell again.  Have a look around and sati
                     'surname' : 'James',
                     'date_of_birth' : ISODate('1984-04-28T23:00:00Z')
             },
-            'enrollments' : [
+            'enrolments' : [
                     {
                             'start_date' : ISODate('2003-01-29T00:00:00Z'),
                             'name' : 'Psychology',
@@ -628,7 +630,7 @@ The basic structure looks like this, though this can change from document to doc
             'surname' : String,
             'date_of_birth' : ISODate,
         },
-        'enrollments' : [{
+        'enrolments' : [{
             'start_date' :ISODate,
             'name' : String,
             'school' : String,
@@ -644,9 +646,13 @@ We're going to be going through working with these documents in some detail, wit
 
 As previously mentioned, every document in Mongo must have a unique primary key stored in the `_id` field.  To keep things easy I've given all the students an integer key from `1` to `1000`.
 
-> Find the document with an `_id` of 50.
->
-> You should return Trudy Alice James
+1. Find the document with an `_id` of 50. (You should return Trudy Alice James)
+
+We can also use regular expressions (though these will be unsargable).
+
+### Exercise Two: Search with a RegEx
+
+1. Search for all users who's surname starts with `A`.  (There's 607)
 
 ## Nested Documents
 
@@ -665,7 +671,7 @@ However, if you run this then you'll only return one document that I've specific
         personal : {
             gender : 'Female'
         },
-        enrollments: [ ... ]
+        enrolments: [ ... ]
     }
     
 The reason that this document is returned is because this structure tells Mongo that you want an exact match, that being a nested document in the `personal` field that contains only the `gender` field with the value `Female`.  The query we want is to find all the documents which have a nested `personal` document that contains a `gender` field with the value `Female`.  To do this we use the dot syntax:
@@ -674,7 +680,7 @@ The reason that this document is returned is because this structure tells Mongo 
         'personal.gender': 'Female'
     })
 
-### Exercise Two:  Querying Nested Documents
+### Exercise Three:  Querying Nested Documents
 
 > Find all the students with the surname of `Roberts`.
 
@@ -709,10 +715,133 @@ All of them have the integer `1` in the field, in some it's inside an array.  Wh
 
 If we want to find an element in a specific position in an array then we can use an ordinal position with a dot delimiter `{ 'foo.0': 1 }`.  This will only return the documents where the the `1` is first element in the array.
 
-### Exercise Three:  Select array elements
+### Exercise Four:  Select array elements
 
 You have three tasks now:
 
 1. Find all the students with `Judy` as any of their names. (There's 582.)
 2. Find all the students with `Judy` as their first name. (There's 266.)
 3. Find all the students with `Judy` as their first name and `Grace` as their second name. (There's 17.)
+
+Arrays can also contain documents, which can be filtered on.  If we want to get everyone who's got a score of `50` then we can use `{ 'enrolments.score': 50 }`.  If we want to find everyone who's got a score of `50` in the `Systems and Control Technology` course then we have a problem.
+
+    {
+        'enrolments.score': 50,
+        'enrolments.name': 'Systems and Control Technology'
+    }
+    
+This query object will search for all documents that have a score of `50` in the enrolments array and have a name of `Systems and Control Technology` in the enrolments array.  We want both these values to be in the same document.  To achieve this we need to use an operator, `$elemMatch`.  `$elemMatch` _wraps_ the fields that you want to be constrained to a single document.
+
+    {
+        enrolments: {
+            $elemMatch: {
+                score: 50,
+                name: 'Systems and Control Technology'
+            }
+        }
+    }
+
+When we run this we now get the expected result.
+
+### Exercise Five:  Select array documents
+
+1. Find all the students called `Victor` who enrolled in a got `31` in a course in the `Humanities` school.  (There's 10)
+
+
+## Logical Operators
+
+We need to be able to perform logical operations as well, so for we've only been matching on value which won't get us very far in the real world.  The logical (boolean) operators are documented in the [Logical Query Operations](https://docs.mongodb.com/manual/reference/operator/query-logical/) documentation.
+
+| Name   | Description                                                                                             |
+|--------|---------------------------------------------------------------------------------------------------------|
+| `$and` | Joins query clauses with a logical AND returns all documents that match the conditions of both clauses. |
+| `$not` | Inverts the effect of a query expression and returns documents that do not match the query expression.  |
+| `$nor` | Joins query clauses with a logical NOR returns all documents that fail to match both clauses.           |
+| `$or`  | Joins query clauses with a logical OR returns all documents that match the conditions of either clause. |
+
+The not clause deserves some special mention, it is the set of not returned by an inclusive search.  When it comes to arrays the behaviour can be a bit unintuitive.  If you recall, when searching for a value against an array field, Mongo will iterate all the values looking for any match.  Not, however, looks through the array checking that all the elements satisfy the not clause.
+
+Consider this document:
+
+    {
+        "foo" : [ 
+            1, 
+            2, 
+            3
+        ]
+    }
+
+If I search with an equality I get the document returned:
+
+    db.test.find({
+        foo: 2
+    })
+
+As we know, this is because Mongo finds the searched for value in the array.  If I now search with a not clause instead then I get no document returned:
+
+    db.test.find({
+        foo: {
+            $not: {
+                $eq: 2
+            }
+        }
+    })
+
+Certainly there are elements in the array that are not `2`.  The reasoning for this seemingly strange change in searching behaviour to satisfy that all the documents returned from a query, summed with all the documents that are returned from `$not` that query should equal the total number of documents.  If this behaviour wasn't true then we could have a query and not that query both returning all the documents.
+
+## Exercise Six: Not clauses
+
+1. Find all the students who haven't enrolled in any course from the `Technology` school.
+2. Find all the students who have scored a `0` in any subject from the `Technology` school and then all those who haven't.  Confirm that these both add up to the total number of documents. (There're 8548 who have not and 1452 who have.) 
+
+## Comparison documents
+
+Matching by equality isn't usually enough, we want often to match by comparison. Mongo provides us with a set of comparison  operators to allow us to perform comparisons.
+
+|Name    | Description                                                          |
+|--------|----------------------------------------------------------------------|
+| `$eq`  | Matches values that are equal to a specified value.                  |
+| `$gt`  | Matches values that are greater than a specified value.              |
+| `$gte` | Matches values that are greater than or equal to a specified value.  |
+| `$in`  | Matches any of the values specified in an array.                     |
+| `$lt`  | Matches values that are less than a specified value.                 |
+| `$lte` | Matches values that are less than or equal to a specified value.     |
+| `$ne ` | Matches all values that are not equal to a specified value.          |
+| `$nin` | Matches none of the values specified in an array.                    |
+
+We could find all the students who were born after 1995 with the `$gte` operator.
+
+    {
+        'personal.date_of_birth' : {
+            $gte: ISODate('1995-01-01')
+        }
+    }
+
+The operators are described in Mongo's [Comparison Query Operators](https://docs.mongodb.com/manual/reference/operator/query-comparison/) documentation.
+
+### Exercise Seven: Comparison
+
+1. Find all the students who are scored a `0` in both `Welsh` and `Dutch`.  (There's 4)
+2. Find all the students who are scored a `0` in either `Welsh` and `Dutch`.  (There's 284)
+
+### Array Operators
+
+We have a few operators to help us interrogate arrays specifically.
+
+
+| Name         | Description                                                                                         |
+|--------------|-----------------------------------------------------------------------------------------------------|
+| `$all`       | Matches arrays that contain all elements specified in the query.                                    |
+| `$elemMatch` | Selects documents if element in the array field matches all the specified `$elemMatch`  conditions. |
+| `$size`      | Selects documents if the array field is a specified size.                                           |
+
+To find all the students who have both `Trudy` and `Alica` in their name we'd use:
+
+    {
+        'personal.given_names' : {
+            $all: ['Trudy', 'Alice']
+        }
+    }
+
+### Exercise Eight: Array size
+1. Get the students who have no middle names.  (There's 967)'
