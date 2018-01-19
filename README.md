@@ -844,4 +844,734 @@ To find all the students who have both `Trudy` and `Alica` in their name we'd us
     }
 
 ### Exercise Eight: Array size
-1. Get the students who have no middle names.  (There's 967)'
+1. Get the students who have no middle names.  (There's 967)
+
+# Updating Documents
+Updating documents is an interesting problem, both syntax wise and implementation wise.  How often you update documents will determine how you structure your database as well as determine what sort of data storage engine you choose (Mongo supports WiredTiger and MMAPv1).  We're going to stick to syntax here though and leave data storage implementation for some other time.
+
+The update method accepts three arguments (the last is optional):
+
+    db.collection.update(
+       <query>,
+       <update>,
+       {
+         upsert: <boolean>,
+         multi: <boolean>,
+         writeConcern: <document>,
+         collation: <document>,
+         arrayFilters: [ <filterdocument1>, ... ]
+       }
+    )
+
+The query determines which documents should be be updated, the update document determines how they are to be updated.
+
+> NB:  By default the update method will only update the first document if finds, to update all the documents we need to pass `{ multi: true }` in the final argument.
+
+Consider this document:
+
+    {
+        _id : 'a',
+        foo : 1.0,
+        bar : 2.0
+    }
+
+Let's update `foo` to `2.0`.  Constructing the query is exactly the same as when we're finding documents.
+
+    update({  _id: 'a' }, 
+           {  foo: 2.0 })
+
+When we check the document to see the changes though we see that something has gone wrong.
+
+    {
+        "_id" : "a",
+        "foo" : 2.0
+    }
+
+The reason is that passing in a _vanilla_ document to the update query tells Mongo that you want to completely replace the document with the new one, only keeping the `_id`.
+
+In fact, you can't change the `_id` field at all.
+
+    update({
+        _id: 'a'
+    }, {
+        _id: 'b'
+    })
+
+Will return error message:
+
+    After applying the update, the (immutable) field '_id' was found to have been altered to _id: "b"
+
+Normally, when updating documents we'll be wanting to manipulate parts of the document, adding, removing and changing fields.
+
+The documentation for the operators is on the [Update Operators](https://docs.mongodb.com/manual/reference/operator/update/) page of the documentation. 
+
+| Name              |                                                                                                                                               |
+|-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| `$currentDate`    | Sets the value of a field to current date, either as a Date or a Timestamp.                                                                   |
+| `$inc`            | Increments the value of the field by the specified amount.                                                                                    |
+| `$min`            | Only updates the field if the specified value is less than the existing field value.                                                          |
+| `$max`            | Only updates the field if the specified value is greater than the existing field value.                                                       |
+| `$mul`            | Multiplies the value of the field by the specified amount.                                                                                    |
+| `$rename`         | Renames a field.                                                                                                                              |
+| `$set`            | Sets the value of a field in a document.                                                                                                      |
+| `$setOnInsert`    | Sets the value of a field if an update results in an insert of a document. Has no effect on update operations that modify existing documents. |
+| `$unset`          | Removes the specified field from a document.                                                                                                  |
+| `$addToSet`       | Adds elements to an array only if they do not already exist in the set.                                                                       |
+| `$pop`            | Removes the first or last item of an array.                                                                                                   |
+| `$pull`           | Removes all array elements that match a specified query.                                                                                      |
+| `$push`           | Adds an item to an array.                                                                                                                     |
+| `$pullAll`        | Removes all matching values from an array.                                                                                                    |
+
+
+
+
+## Setting and Un-setting
+
+The two primary operators for updating are the `$set` and `$unset` operators which will set a fields value (creating it if necessary) and removed a field, respectively.
+
+In our previous example the update document we should have used was:
+
+    update({
+        _id: 'a'
+    }, {
+        $set: {
+            foo: 2.0
+        }
+    })
+
+This would have altered the document instead of replacing it.  Creating new fields is exactly the same:
+
+    update({
+        _id: 'a'
+    }, {
+        $set: {
+            foo: 2.0,
+            baz: 3.0
+        }
+    })
+    
+The document now has a new field:
+
+    {
+        "_id" : "a",
+        "foo" : 2.0,
+        "bar" : 2.0,
+        "baz" : 3.0
+    }
+
+We can combine removing and setting fields into a single update:
+
+    update({
+        _id: 'a'
+    }, {
+        $set: {
+            foo: 'foo',
+            foz: 'foz'
+        }, 
+        $unset: {
+            bar: 'it doesn\'t matter',
+            baz: 'what value goes in an unset.'
+        }
+    })
+    
+> NB:  Any value can go after fields in the unset operator.
+            
+ The document not looks like:
+
+    {
+        "_id" : "a",
+        "foo" : "foo",
+        "foz" : "foz"
+    }
+
+### Exercise Nine: Remove Empty Enrolments
+
+1. Many students are on the system who haven't actually enrolled in anything.  Delete the enrolment field from these students and add a new field to all students that don't have any enrolments to tell us that these students shouldn't be excluded from alumni communications.  (There's 2596)
+
+(Hint, use `find` to check your query before updating)
+
+## Updating Arrays
+
+Update can also add and remove values from arrays, consider these documents:
+
+    {
+        _id: 1,
+        foo: [1,2,3,4,5],
+        bar: [3,4,5,6,7]
+    }, {
+        _id: 2,
+        foo: [3,4,5,6,7],
+        bar: [5,6,7,8,9]
+    }
+
+We can use the `$push` and `$pull` to add and remove elements:
+
+    db.collection.update({
+    }, {
+        $pull: {
+            foo: 3
+        },
+        $push: {
+            bar: 'a'
+        }
+    },
+    { 
+        multi: true 
+    })
+    
+Will now give us:
+    
+    /* 1 */
+    {
+        "_id" : 1.0,
+        "foo" : [1.0, 2.0, 4.0, 5.0 ],
+        "bar" : [3.0, 4.0, 5.0, 6.0, 7.0, "a"] }
+    
+    /* 2 */
+    {
+        "_id" : 2.0,
+        "foo" : [4.0, 5.0, 6.0, 7.0 ], 
+        "bar" : [6.0, 7.0, 8.0, 9.0, "a"] 
+    }
+        
+> NB: You cannot push and pull from the same array in the same operation.
+
+
+We can also perform limited arithmetic calculations, increment and  multiplication.
+
+Consider this document:
+
+    {
+        _id : 1,
+        foo : 1,
+        bar : 2
+    }
+
+I can increment the values in `foo` and `bar`, both positively and negatively:
+
+    {
+        $inc: {
+            foo: 99,
+            bar: -102
+        }
+    }
+
+This will update the document to:
+
+    {
+        "_id" : 1,
+        "foo" : 100.0,
+        "bar" : -100.0
+    }
+
+> NB:  Notice that the type has changed to a float.
+
+
+The `$max` and `$min` operators will replace a value only if it is more or less than the one given.  Given these two document:
+
+    /* 1 */
+    {
+        "_id" : 1,
+        "foo" : 1
+    }
+    
+    /* 2 */
+    {
+        "_id" : 2,
+        "foo" : 2
+    }
+
+We can use the `$min` operator to change the value if it is less than `2`:
+
+    {
+        $min: {
+            foo: -1
+        }
+    }
+    
+    
+This will replace the `foo` in the first document, but not in second:
+
+    /* 1 */
+    {
+        "_id" : 1,
+        "foo" : -1.0
+    }
+    
+    /* 2 */
+    {
+        "_id" : 2,
+        "foo" : 2
+    }
+    
+
+## Array Positions
+
+Mongo has three positional operators (two prior to version 3.6).  These give you some control over what elements in an array are updated.
+
+| Name              | Description                            |
+|-------------------|---------------------------|
+| `$`               | Acts as a placeholder to update the first element that matches the query condition.                                                           |
+| `$[]`             | Acts as a placeholder to update all elements in an array for the documents that match the query condition.                                    |
+| `$[<identifier>]` | Acts as a placeholder to update all elements that match the arrayFilters condition for the documents that match the query condition.          |
+
+The first is the positional operator `$`.  This will match the first element that is matched in the search.
+
+Consider this document:
+
+    {
+        "foo" : [ 
+            1, 
+            2, 
+            2, 
+            3
+        ]
+    }
+
+
+If we craft a filter to search for a specific element in the array then the `$` will reference the first located element:
+
+    update({
+        foo: 2
+    }, {
+        $inc: {
+            'foo.$': 10
+        }
+    })
+
+The element
+
+    {
+        "foo" : [ 
+            1, 
+            12.0, 
+            2, 
+            3
+        ]
+    }
+
+The first `2` is incremented, the subsequent matches are not incremented.
+
+### Exercise Ten: Matching with $
+1. Remove the score from the first instance of a course from the School of Languages.  (There are 7326)
+
+We can also update all the documents in an array if one matches. 
+
+    /* 1 */
+    {
+        "_id" : ObjectId("5a6082569d09cf98319ae41c"),
+        "foo" : [ 
+            1, 
+            2, 
+            3, 
+            4
+        ]
+    }
+    
+    /* 2 */
+    {
+        "_id" : ObjectId("5a608a54cf1ebfa986959538"),
+        "foo" : [ 
+            1, 
+            3, 
+            4, 
+            5
+        ]
+    }
+
+Use this update:
+
+    update({foo: 2}, {
+        $mul: {
+            'foo.$[]': 10,
+        }
+    })
+
+We have multiplied all the elements in `foo` in document one, none in document two.
+
+
+    /* 1 */
+    {
+        "_id" : ObjectId("5a6082569d09cf98319ae41c"),
+        "foo" : [ 
+            10.0, 
+            20.0, 
+            30.0, 
+            40.0
+        ]
+    }
+    
+    /* 2 */
+    {
+        "_id" : ObjectId("5a608a54cf1ebfa986959538"),
+        "foo" : [ 
+            1, 
+            3, 
+            4, 
+            5
+        ]
+    }
+
+The last, and most recently introduced positional update operator is the array filter.  It's actually a two part operation, we declare an identifier for an array in out update, we can then supply a further filter in the options object.
+
+Conciser this document:
+
+    {
+        "results" : [ 
+            {
+                "name" : "foo"
+            }, 
+            {
+                "name" : "bar"
+            },
+            {
+                "name": "baz"
+            }
+        ]
+    }
+    
+We can write a query that will match `foo` and `baz`:
+
+**I'm still figuring this one out.  Watch this space**
+
+# Aggregation
+
+Mongo DB has three mechanisms for aggregation.
+
+1. Aggregating with the cursor returned by a find.
+2. The Aggregation Pipeline.
+3. Map-Reduce.
+
+## Aggregating with the find method
+
+As mentioned earlier, the find method doesn't return the records directly; instead it returns a cursor which will return the records in batches as we iterate over it.  The cursor also exposes some methods that allow us to modify, aggregate and/or replace the documents.  The full list is in the [documentation](https://docs.mongodb.com/manual/reference/method/js-cursor/), there are more that just aggregation methods.
+
+The aggregation methods are:
+
+| Method              | Description                                                                                                   |
+|---------------------|---------------------------------------------------------------------------------------------------------------|
+| `cursor.count()`    | Modifies the cursor to return the number of documents in the result set rather than the documents themselves. |
+| `cursor.limit()`    | Constrains the size of a cursor’s result set.                                                                 |
+| `cursor.map()`      | Applies a function to each document in a cursor and collects the return values in an array.                   |
+| `cursor.size()`     | Returns a count of the documents in the cursor after applying skip() and limit() methods.                     |
+| `cursor.skip()`     | Returns a cursor that begins returning results only after passing or skipping a number of documents.          |
+| `cursor.sort()`     | Returns results ordered according to a sort specification.                                                    |
+| `cursor.toArray()`  | Returns an array that contains all documents returned by the cursor.                                          |
+
+### Exercise Eleven: Sorting
+1. Return the 10 oldest students, in alphabetical surname order, by the number of given names they have in reverse order.
+2. Use map to write out each student's full name.
+
+## The Aggregation Pipeline
+
+Finally, we're at the good stuff.  The Aggregation Pipeline allows you to transform documents as they flow through a number of stages.  The output of each stage becomes the input to the nest.  Each stage both accepts and produces a BSON document.
+
+The Aggregation Pipeline is implemented in the aggregate method:
+
+    aggregate([{...}, {...}, ...])
+
+Each object is a BSON document that describes one stage.  The available stages are added to regularly, the latest list is on the Mongo [documentation](https://docs.mongodb.com/manual/meta/aggregation-quick-reference/).
+
+The simplest stage is probably the `$count` stage.  It simple accepts a field name to output the count of all the documents it see into and produces a single document with this field.
+
+    aggregate([{
+        $count: 'my_count'
+    }])
+    
+This will produce
+
+    {
+        my_count: 12345
+    }
+
+By itself it will give us the total number of documents in the collection, to get finer control over what we count we can first filter the documents coming through with the `$match` stage.
+
+    aggregate([{
+        $match: {
+            <condidtion>
+        }
+    }, {
+        $count: 'my_count'
+    }])
+
+This will product the same structured document as the last example, but only the documents that get through the `$match` stage will be counted.
+
+### Exercise Twelve: Counting
+1. Count how many men there are.
+2. Count how many women there are.
+3. Is anyone neither male nor female?
+
+We can also sort with the `$sort` stage.
+
+### Exercise Thirteen: Sort and match
+1. Return the top ten documents, sorted by the number of courses they have enrolled in (ignoring whether they completed of not).
+1. Return the next ten documents.
+
+The first powerful stage is the `$projection` stage.  This lets us change the documents as they come through, adding, removing and changing fields.  it's basic operation is the same as the projection object in the find method, that being you can either have a white list, or a black list, signified with `1` or `0` (`_id` still need to be explicitly excluded.
+
+### Exercise Fourteen: Limiting with Projection
+1. Output only the personal details for ten students.
+
+We can also manipulate fields and reference other fields.
+
+Consider these documents:
+
+    /* 1 */
+    {
+        "_id" : 1,
+        "foo" : "a"
+    }
+    
+    /* 2 */
+    {
+        "_id" : 2,
+        "foo" : "b"
+    }
+    
+    /* 3 */
+    {
+        "_id" : 3,
+        "foo" : "c"
+    }
+    
+We can use projection to produce a new document that creates a new document using the fields in the input documents.  To refer to the value of another field we use a dollar syntax.  To refer to the value of `foo`, for example, we'd write `$foo`.
+
+So we can write the following pipeline:
+
+    db.collection.aggregate([{
+        $project: {
+            _id: 0,
+            foo: 1,
+            new_field: '$_id',
+            another_new_field: '$foo',
+            message: 'Hello World!'
+        }
+    }])
+    
+This will give us a new stream of documents:
+
+    /* 1 */
+    {
+        "foo" : "a",
+        "new_field" : 1,
+        "another_new_field" : "a",
+        "message" : "Hello World!"
+    }
+    
+    /* 2 */
+    {
+        "foo" : "b",
+        "new_field" : 2,
+        "another_new_field" : "b",
+        "message" : "Hello World!"
+    }
+    
+    /* 3 */
+    {
+        "foo" : "c",
+        "new_field" : 3,
+        "another_new_field" : "c",
+        "message" : "Hello World!"
+    }
+
+This is that's happening:
+
+| Expression                | Effect                                                     |
+|---------------------------|------------------------------------------------------------|
+| `_id: 0`                  | Exclude this field                                         |
+| `foo: 1`                  | Include this field                                         |
+| `new_field: '$_id'` <br /> `another_new_field: '$foo'` | Create new fields and assign them the values in `_id` and `foo` respectively |
+| `message: 'Hello World!'` | Create a new field and give it the value of `Hello World!`
+
+### Exercise Fifteen:  More projection
+1. Return a document with the student's first name and surname in a field called `name` and another field called `enrolment_count` which contains the number of courses they are enrolled in.
+
+## Grouping
+
+The `$group` stage performs aggregations by grouping and producing a document for each group.  The group is determined by how you define the `_id` field.  Each unique `_id` will be a new group.
+
+I have a sequence of document with the following values:
+
+    /* 1 */
+    {
+        "foo" : "a"
+    }
+    
+    /* 2 */
+    {
+        "foo" : "b"
+    }
+    
+    /* 3 */
+    {
+        "foo" : "c"
+    }
+
+These have been duplicated in the collection.  I can use `$group` to find out information about them.
+
+I can perform a simple distinct operation by just setting the `_id` field to the value of the field we want to get distinct values of:
+
+    db.collection.aggregate([{
+        $group: {
+            _id: '$foo',
+        }
+    }])
+    
+Gives us a document for `a`, `b` and `c`:
+
+    /* 1 */
+    {
+        "_id" : "b"
+    }
+    
+    /* 2 */
+    {
+        "_id" : "c"
+    }
+    
+    /* 3 */
+    {
+        "_id" : "a"
+    }
+    
+> NB:  Notice that ordering isn't preserved.
+
+We can do more using the various operators available, we can count the number of documents there by giving a value of `1` to the `$sum` operator:
+
+    db.collection.aggregate([{
+        $group: {
+            _id: '$foo',
+            count: {
+                $sum: NumberInt(1)
+            }
+        }
+    }])
+    
+This now gives us:
+
+    /* 1 */
+    {
+        "_id" : "b",
+        "count" : 55
+    }
+    
+    /* 2 */
+    {
+        "_id" : "c",
+        "count" : 55
+    }
+    
+    /* 3 */
+    {
+        "_id" : "a",
+        "count" : 55
+    }
+
+### Exercise Sixteen: Counting and Sorting Given Names
+1. Find out the count of students with each number of given names, sort these.
+1. How do the number of given names a student has relate to their surname?
+
+We can also aggregate values into an array using the `$push` operator.
+
+Consider this documents:
+    
+    {
+        "foo" : "a",  // foo can be 'a' or 'b'.
+        "bar" : 1.0  // bar is a number
+    }
+
+We can use `$group` to create documents for `a` and `b` that contain all the values of `bar` for those documents.
+
+    db.collection.aggregate([{
+        $group: {
+            _id: '$foo',
+            bars: {
+                $push: '$bar'
+            }
+        }
+    }])
+    
+This will give us:
+    
+    /* 1 */
+    {
+        "_id" : "b",
+        "bars" : [ 
+            10.0, 
+            11.0, 
+            12.0, 
+            14.0, 
+            15.0
+        ]
+    }
+    
+    /* 2 */
+    {
+        "_id" : "a",
+        "bars" : [ 
+            1.0, 
+            2.0, 
+            3.0, 
+            4.0, 
+            5.0
+        ]
+    }
+
+### Exercise Seventeen: Creating a New Array
+
+1. Create documents each having a surname and all the first names that people with that surname could have.
+1. Do the same, but this time with no duplicate names.
+
+## Unwinding (pivoting)
+
+The `$unwind` stage allows you to break an array in a new document for each array entry.
+
+Consider this document:
+
+    {
+        "_id" : 1,
+        "foo" : "abc",
+        "bar" : [ 
+            1.0, 
+            2.0, 
+            3.0
+        ]
+    }
+
+We have an array in the `bar` field.  By unwinding this array we will produce three documents, one for each `bar` value.
+
+    db.collection.aggregate([{
+        $unwind: '$bar'
+    }])
+
+This gives us the following:
+
+    /* 1 */
+    {
+        "_id" : 1,
+        "foo" : "abc",
+        "bar" : 1.0
+    }
+    
+    /* 2 */
+    {
+        "_id" : 1,
+        "foo" : "abc",
+        "bar" : 2.0
+    }
+    
+    /* 3 */
+    {
+        "_id" : 1,
+        "foo" : "abc",
+        "bar" : 3.0
+    }
+
+> NB: Notice that the `_id` is copied as well, therefore we couldn't write this directly back to the database.
+
+## Exercise Eighteen: Unwinding
+
+1. What is the most popular course?
+1. List all the courses by their school.
+1. That are the total points awarded for each school?
+
