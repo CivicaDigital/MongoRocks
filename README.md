@@ -64,12 +64,12 @@ Now we're ready to connect.
 
 ## Connecting to a MongoDB Server
 
-`mongo.exe` provides us with a CLI to work with Mongo (there are drivers for languages and GUIs available as well, we'll work with the CLI for a bit though).  By default `mongo.exe` will:
+`mongo.exe` provides us with a shell to work with Mongo (there are drivers for languages and GUIs available as well, we'll work with the shell for a bit though).  By default the Mongo Shell will:
 
 * Try to connect at `localhost:27027`.
 * Will not authenticate.
 
-So, we want the defaults so just run `mongo.exe` then we'll firstly see more logs appear on the server's output:
+So, we want the defaults so just run `mongo.exe`  Firstly see more logs appear on the server's output:
 
     [listener] connection accepted from 127.0.0.1:59218 #1 (1 connection now open)
     [conn1] received client metadata from 127.0.0.1:59218 conn: 
@@ -104,11 +104,11 @@ Firstly let's see what databases exist by default.
     config  0.000GB
     local   0.000GB
 
-These all have roles to play but are not used to store you documents, in fact if you were to put them in any of these databases than they may well get deleted or the server might just break.
+These all have roles to play but are not used to store your documents.  In fact if you were to put your documents in any of these databases than they may well get deleted or the server might just break.
 
 Creating databases and collections is done implicitly.  If you try to write to a database and\or collection that doesn't exist then it'll just get created.
 
-When we're working in the shell we'll always to working in the context of a single database.  The reference to that database is stored in the `db` variable.  Just type `db` to see what it's pointing to:
+When you're working in the shell you'll always to working in the context of a single database.  The reference to that database is stored in the `db` variable.  Just type `db` to see what it's pointing to:
 
     > db
     test
@@ -124,7 +124,9 @@ We can see what collections are in a database with `show collections`.  There ar
 
 ## BSON Documents
 
-BSON is the format that Mongo stores and retrieved data in.  Based on JSON, BSON is is nested structure that contains key/value pairs of objects, arrays and data types.  Unlike JSON, BSON is not a text file.  BSON also supports more data types than JSON, these are described in the [MongoDB documentation](https://docs.mongodb.com/manual/reference/bson-types/) and in the [BSON Specification](http://bsonspec.org/spec.html).  In BSON language, the data structure is referred to as a _document_, as are all objects in the document (_nested documents_).
+BSON is the format that all Mongo documents are stored and retrieved data in.  Based on JSON, BSON is is nested structure that contains key/value pairs of objects, arrays and data types.  Unlike JSON, BSON is not a text file.  
+
+BSON also supports more data types than JSON, these are described in the [MongoDB documentation](https://docs.mongodb.com/manual/reference/bson-types/) and in the [BSON Specification](http://bsonspec.org/spec.html).  In BSON language, the data structure is referred to as a _document_, as are all objects in the document (_nested documents_).
 
 > JSON is not completely a subset of BSON as BSON doesn't allow `0x00` character.  BSON reserves `0x00` for control purposes such as string termination.
 
@@ -141,25 +143,25 @@ Take this BSON document:
 
 The BSON file created for this would have this structure:
 
-| Description | Bytes | Value |
-|-------------|-------|-------|
-| File size | `26` `00` `00` `00` | `38` |
-| Data type | `07` | _ObjectId_ |
-| Field name | `5F` `69` `64` | `_id` |
-| String terminator | `00` |  |
-| Field Value | `01` `23` `45` `67` `89` `AB` `CD` `EF` `01` `23` `45` `67` | `0123456789ABCDEF01234567` |
-| Data type | `02` | _String_ |
-| Field name | `6E` `61` `6D` `65` | `name` |
-| String terminator | `00` |  |
-| Field Length | `06` `00` `00` `00` | `6` |
-| Field value | `44` `61` `76` `69` `64` | `David` |
-| String terminator | `00` |  |
-| Object terminator | `00` |  |
+| Description       | Bytes                                                       | Value                      |
+|:------------------|:------------------------------------------------------------|:---------------------------|
+| File size         | `26` `00` `00` `00`                                         | `38`                       |
+| Data type         | `07`                                                        | _ObjectId_                 |
+| Field name        | `5F` `69` `64`                                              | `_id`                      |
+| String terminator | `00`                                                        |                            |
+| Field Value       | `01` `23` `45` `67` `89` `AB` `CD` `EF` `01` `23` `45` `67` | `0123456789ABCDEF01234567` |
+| Data type         | `02`                                                        | _String_                   |
+| Field name        | `6E` `61` `6D` `65`                                         | `name`                     |
+| String terminator | `00`                                                        |                            |
+| Field Length      | `06` `00` `00` `00`                                         | `6`                        |
+| Field value       | `44` `61` `76` `69` `64`                                    | `David`                    |
+| String terminator | `00`                                                        |                            |
+| Object terminator | `00`                                                        |                            |
 
 > NB: There is a 64Mb limit on any document size.
 
 
-Mongo provides tooling to export the document to JSON, when it does it used some JSON compliant structures to capture data types that are not JSON compliant.
+Mongo provides tooling to export the document to JSON.  Mongo will produce valid JSON with a naming convention to capture data types that aren't in the JSON specification.
 
 The above document would be serialised to JSON like so:
 
@@ -220,13 +222,13 @@ When we add many, we get the `_id` fields returned to us.  If we try to insert a
     })
 
 ## Retrieving Documents
-We use the find method to retrieve documents, or rather we use the cursor returned by the find method.  The method has the syntax:
+We use the find method to retrieve documents, or rather we use the cursor returned by the find function.  The function has the syntax:
 
     find(<filter>, <projection>)
 
 Both the filter and the projection are optional.
 
-To retrieve all the documents we just call the find with either no arguments, or with an empty object.
+To retrieve all the documents we just call the find function with either no arguments, or with an empty object.
 
     > db.names.find()
     { '_id' : 1, 'name' : 'David' }
@@ -280,7 +282,7 @@ We can search for specific documents by providing a filter document:
 
 ## Removing Documents
 
-Removing documents is similar to finding them.  We pass in a the same filter object as we would when finding and also an options object.  There is a is safety feature though, the filter object isn't optional (to prevent you from the accidental pressing of go and deleting the entire database).
+Removing documents is similar to finding them.  We pass in a the same filter object as we would when finding and also an options object.  There is a is safety feature though, the filter object isn't optional (to prevent you from accidentally pressing of go and deleting the entire database).
 
     db.names.remove(<filter>)
     
@@ -343,7 +345,7 @@ When we search now we see lots of documents:
     { 'number' : 19 }
     Type 'it' for more
 
-Now we have a good number of documents we can see the batching behaviour of the cursor, only twenty documents are returned.  We iterate the cursor with the `it` command.
+Now we have a good number of documents we can see the batching behaviour of the cursor, only twenty documents are returned.  We can iterate the cursor with the `it` command.
     
     > it
     { 'number' : 20 }
@@ -384,7 +386,7 @@ Now we can call the function:
     > Hello('Dave')
     Hello Dave!
     
-JavaScript is powerful and might be an unacceptable attack vector.  You can prevent JavaScript from being executed by passing the `--noscripting` option when you start `mongod.exe`.  Scripting on the client is never prevented.
+JavaScript is powerful and might be an unacceptable attack vector.  You can prevent JavaScript from being executed on the server by passing the `--noscripting` option when you start `mongod.exe`.  Scripting on the client is never prevented.
 
 ## Importing and Exporting
 
@@ -393,7 +395,7 @@ Mongo has two exporting tools and two importing tools, to be used in pairs:
 * `mongoexport.exe` & `mongoimport.exe`
 * `mongodump.exe` & `mongorestore.exe`
 
-The first two work with JSON, the next two work with BSON and meta-data.  For a full backup/restore you need to use the second pair.  Not only will it include the data in native BSON but it will also include the indexes etc.
+The first two work with JSON, the second two work with BSON and meta-data.  For a full backup/restore you need to use the second pair.  Not only will it include the data in native BSON but it will also include the indexes etc.
 
     ...>mongoexport --collection names --out .\names-export.json
     2018-01-16T15:49:21.203+0000    connected to: localhost
@@ -425,7 +427,7 @@ This gives us a directory with two files in it:
             names.bson
             names.metadata.json
 
-The `names.bson` file contains all out data in BSON format.  The `names.metadata.json` file contains information about the collection so that it can be rebuilt accurately.  This on contains:
+The `names.bson` file contains all out data in BSON format.  The `names.metadata.json` file contains information about the collection so that it can be rebuilt accurately, this contains:
 
     {
         'options': {},
@@ -440,7 +442,7 @@ The `names.bson` file contains all out data in BSON format.  The `names.metadata
         'uuid': 'dc47a6aa6a0c4c368688c1cc7fa5775f'
     }
     
-We can see that there is a single index in this database.  It's called `_id_` and it's on the `_id` field ascending (descending would be a `-1` instead).
+We can see that there is a single index in this database called `_id_` and it's on the `_id` field ascending (descending would be a `-1` instead).
 
 We've going to clear the database and restore one that's already made.  In the shell, make sure you're in the `mongo_rocks` database and issue this command:
 
@@ -457,7 +459,7 @@ We've going to clear the database and restore one that's already made.  In the s
     config  0.000GB
     local   0.000GB
 
-Now restore from the `mongo-rocks-dump` directory (download it compressed from [here](https://bitbucket.org/BanksySan/mongorocks/downloads/mongo-rocks-dump.v1.zip) and uncompress it). 
+Now restore from the `mongo-rocks-dump` directory (download it compressed from [the repository](https://bitbucket.org/BanksySan/mongorocks/downloads/mongo-rocks-dump.v1.zip) and uncompress it). 
 
 
     ...> mongorestore --nsInclude mongo_rocks.students mongo_rocks\mongo-rocks-dump
@@ -468,7 +470,7 @@ Now restore from the `mongo-rocks-dump` directory (download it compressed from [
     finished restoring mongo_rocks.students (10000 documents)
     done
     
-Now, for the last time, open the Mongo shell again.  Have a look around and satisfy yourself that it's in good order:
+Now open the Mongo shell again.  Have a look around and satisfy yourself that it's in good order:
 
     > show dbs
     admin        0.000GB
@@ -642,17 +644,13 @@ We're going to be going through working with these documents in some detail, wit
 
 ## Find by Value
 
-### Exercise One:  Find by ID
-
 As previously mentioned, every document in Mongo must have a unique primary key stored in the `_id` field.  To keep things easy I've given all the students an integer key from `1` to `1000`.
+
+### Exercise One:  Find by ID
 
 1. Find the document with an `_id` of 50. (You should return Trudy Alice James)
 
 We can also use regular expressions (though these will be unsargable).
-
-### Exercise Two: Search with a RegEx
-
-1. Search for all users who's surname starts with `A`.  (There's 607)
 
 ## Nested Documents
 
@@ -680,9 +678,10 @@ The reason that this document is returned is because this structure tells Mongo 
         'personal.gender': 'Female'
     })
 
-### Exercise Three:  Querying Nested Documents
+### Exercise Two:  Querying Nested Documents and Regular Expressions
 
-> Find all the students with the surname of `Roberts`.
+1. Search for all users who's surname starts with `A`.  (There's 607)
+1. Find all the students with the surname of `Roberts`.
 
 ## Arrays
 
@@ -711,17 +710,15 @@ Consider the following three documents (`_id` removed):
         ]
     }
     
-All of them have the integer `1` in the field, in some it's inside an array.  When we use the filter `{ foo: 1 }` however we actually return all three, this is because when Mongo reaches an array it will iterate through it looking for any match in the array.
+All of them have the integer `1` in the `foo` field, in some it's inside an array.  When we use the filter `{ foo: 1 }` however we actually return all three, this is because when Mongo reaches an array it will iterate through it looking for any match in the array.
 
 If we want to find an element in a specific position in an array then we can use an ordinal position with a dot delimiter `{ 'foo.0': 1 }`.  This will only return the documents where the the `1` is first element in the array.
 
-### Exercise Four:  Select array elements
-
-You have three tasks now:
+### Exercise Three:  Select array elements
 
 1. Find all the students with `Judy` as any of their names. (There's 582.)
-2. Find all the students with `Judy` as their first name. (There's 266.)
-3. Find all the students with `Judy` as their first name and `Grace` as their second name. (There's 17.)
+1. Find all the students with `Judy` as their first name. (There's 266.)
+1. Find all the students with `Judy` as their first name and `Grace` as their second name. (There's 17.)
 
 Arrays can also contain documents, which can be filtered on.  If we want to get everyone who's got a score of `50` then we can use `{ 'enrolments.score': 50 }`.  If we want to find everyone who's got a score of `50` in the `Systems and Control Technology` course then we have a problem.
 
@@ -743,9 +740,9 @@ This query object will search for all documents that have a score of `50` in the
 
 When we run this we now get the expected result.
 
-### Exercise Five:  Select array documents
+### Exercise Four:  Select array documents
 
-1. Find all the students called `Victor` who enrolled in a got `31` in a course in the `Humanities` school.  (There's 10)
+1. Find all the students called `Victor` who enrolled in any course in the `Humanities` school and got a score of `31` in the course.  (There's 10)
 
 
 ## Logical Operators
@@ -759,7 +756,7 @@ We need to be able to perform logical operations as well, so for we've only been
 | `$nor` | Joins query clauses with a logical NOR returns all documents that fail to match both clauses.           |
 | `$or`  | Joins query clauses with a logical OR returns all documents that match the conditions of either clause. |
 
-The not clause deserves some special mention, it is the set of not returned by an inclusive search.  When it comes to arrays the behaviour can be a bit unintuitive.  If you recall, when searching for a value against an array field, Mongo will iterate all the values looking for any match.  Not, however, looks through the array checking that all the elements satisfy the not clause.
+The not clause deserves some special mention, it is the set of documents not returned by an inclusive search (i.e. not, not the documents).  When it comes to arrays the behaviour can be a bit unintuitive.  If you recall, when searching for a value against an array field, Mongo will iterate all the values looking for any match.  The not operator looks through all the values in the array checking that all the elements satisfy the not clause.
 
 Consider this document:
 
@@ -789,10 +786,10 @@ As we know, this is because Mongo finds the searched for value in the array.  If
 
 Certainly there are elements in the array that are not `2`.  The reasoning for this seemingly strange change in searching behaviour to satisfy that all the documents returned from a query, summed with all the documents that are returned from `$not` that query should equal the total number of documents.  If this behaviour wasn't true then we could have a query and not that query both returning all the documents.
 
-## Exercise Six: Not clauses
+## Exercise Five: Not clauses
 
-1. Find all the students who haven't enrolled in any course from the `Technology` school.
-2. Find all the students who have scored a `0` in any subject from the `Technology` school and then all those who haven't.  Confirm that these both add up to the total number of documents. (There're 8548 who have not and 1452 who have.) 
+1. Find all the students who haven't enrolled in any course from the `Technology` school. (There's 3592)
+2. Find all the students who have scored a `0` in any subject from the `Technology` school and then all those who haven't.  Confirm that these both add up to the total number of documents. (There's 8548 who have not and 1452 who have.) 
 
 ## Comparison documents
 
@@ -819,10 +816,8 @@ We could find all the students who were born after 1995 with the `$gte` operator
 
 The operators are described in Mongo's [Comparison Query Operators](https://docs.mongodb.com/manual/reference/operator/query-comparison/) documentation.
 
-### Exercise Seven: Comparison
-
-1. Find all the students who are scored a `0` in both `Welsh` and `Dutch`.  (There's 4)
-2. Find all the students who are scored a `0` in either `Welsh` and `Dutch`.  (There's 284)
+### Exercise Six: Comparison
+1. Find all the students who were born after in or after 1995
 
 ### Array Operators
 
@@ -843,7 +838,10 @@ To find all the students who have both `Trudy` and `Alica` in their name we'd us
         }
     }
 
-### Exercise Eight: Array size
+### Exercise Seven: Array Queries
+
+1. Find all the students who are scored a `0` in both `Welsh` and `Dutch`.  (There's 4)
+2. Find all the students who are scored a `0` in either `Welsh` and `Dutch`.  (There's 284)
 1. Get the students who have no middle names.  (There's 967)
 
 # Updating Documents
@@ -865,7 +863,7 @@ The update method accepts three arguments (the last is optional):
 
 The query determines which documents should be be updated, the update document determines how they are to be updated.
 
-> NB:  By default the update method will only update the first document if finds, to update all the documents we need to pass `{ multi: true }` in the final argument.
+> NB:  By default the update method will only update the first document it finds, to update all the documents we need to pass `{ multi: true }` in the final argument.
 
 Consider this document:
 
@@ -984,9 +982,9 @@ We can combine removing and setting fields into a single update:
         "foz" : "foz"
     }
 
-### Exercise Nine: Remove Empty Enrolments
+### Exercise Eight: Remove Empty Enrolments
 
-1. Many students are on the system who haven't actually enrolled in anything.  Delete the enrolment field from these students and add a new field to all students that don't have any enrolments to tell us that these students shouldn't be excluded from alumni communications.  (There's 2596)
+1. Many students are on the system who haven't actually enrolled in anything.  Delete the enrolment field from these students and add a new field to all students that don't have any enrolments to tell us that these students shouldn't be included from alumni communications.  (There's 2596)
 
 (Hint, use `find` to check your query before updating)
 
@@ -1033,9 +1031,11 @@ Will now give us:
         "foo" : [4.0, 5.0, 6.0, 7.0 ], 
         "bar" : [6.0, 7.0, 8.0, 9.0, "a"] 
     }
-        
+    
 > NB: You cannot push and pull from the same array in the same operation.
 
+### Exercise  Nine: Why the floats?
+1. If you haven't figured it out yet, find out why the integers are being converted to floating points when we perform these calculations on them.
 
 We can also perform limited arithmetic calculations, increment and  multiplication.
 
@@ -1081,7 +1081,7 @@ The `$max` and `$min` operators will replace a value only if it is more or less 
         "foo" : 2
     }
 
-We can use the `$min` operator to change the value if it is less than `2`:
+We can use the `$min` operator to change the value if it is less than `-1`:
 
     {
         $min: {
@@ -1259,18 +1259,18 @@ The aggregation methods are:
 | `cursor.toArray()`  | Returns an array that contains all documents returned by the cursor.                                          |
 
 ### Exercise Eleven: Sorting
-1. Return the 10 oldest students, in alphabetical surname order, by the number of given names they have in reverse order.
+1. (This is a trick question, but what's the trick?)  Return the 10 oldest students, in alphabetical surname order, by the number of given names they have in reverse order.
 2. Use map to write out each student's full name.
 
 ## The Aggregation Pipeline
 
-Finally, we're at the good stuff.  The Aggregation Pipeline allows you to transform documents as they flow through a number of stages.  The output of each stage becomes the input to the nest.  Each stage both accepts and produces a BSON document.
+Finally, we're at the good stuff.  The Aggregation Pipeline allows you to transform documents as they flow through a number of stages.  The output of each stage becomes the input to the next.  Each stage both accepts and produces one of more BSON documents.
 
 The Aggregation Pipeline is implemented in the aggregate method:
 
     aggregate([{...}, {...}, ...])
 
-Each object is a BSON document that describes one stage.  The available stages are added to regularly, the latest list is on the Mongo [documentation](https://docs.mongodb.com/manual/meta/aggregation-quick-reference/).
+Each object is a BSON document that describes one stage.  A list is on the Mongo [documentation](https://docs.mongodb.com/manual/meta/aggregation-quick-reference/).
 
 The simplest stage is probably the `$count` stage.  It simple accepts a field name to output the count of all the documents it see into and produces a single document with this field.
 
@@ -1304,7 +1304,7 @@ This will product the same structured document as the last example, but only the
 We can also sort with the `$sort` stage.
 
 ### Exercise Thirteen: Sort and match
-1. Return the top ten documents, sorted by the number of courses they have enrolled in (ignoring whether they completed of not).
+1. Return the top ten documents, sorted by the number of courses they have enrolled in (ignoring whether they completed the course or not).
 1. Return the next ten documents.
 
 The first powerful stage is the `$projection` stage.  This lets us change the documents as they come through, adding, removing and changing fields.  it's basic operation is the same as the projection object in the find method, that being you can either have a white list, or a black list, signified with `1` or `0` (`_id` still need to be explicitly excluded.
@@ -1574,4 +1574,5 @@ This gives us the following:
 1. What is the most popular course?
 1. List all the courses by their school.
 1. That are the total points awarded for each school?
+1. Produce the same data again, but this time in a single document.
 
