@@ -1576,3 +1576,226 @@ This gives us the following:
 1. That are the total points awarded for each school?
 1. Produce the same data again, but this time in a single document.
 
+# Indexes
+Like any database worth its salt, Mongo supports indexing.  Mongo has several types of indexes, some will be familiar if you've used any RDBMS and some are unique.
+
+We can view all the indexed with either the `db.collection.getIndices()` or the `db.collection.getIndexes()`. command.  For our collection it'll just return one index:
+
+
+    [
+        {
+            "v" : 2,
+            "key" : {
+                "_id" : 1
+            },
+            "name" : "_id_",
+            "ns" : "test.collection"
+        }
+    ]
+
+
+Because Mongo doesn't enforce a collection-wide schema (bar the existence of `_id` the fields we index on don't have to assume any.
+
+The above shows if that the index called `_id_` is on a field called `_id` and is an ascending index, a descending index would have `-1`.  the `ns` field is the namespace of the collection.
+
+The `v` field indicates the version of the implementation of the index, this is version 3.
+
+> Version 1 (i.e. `v: 0`) indexes are no longer supported.
+
+Mongo doesn't let you create duplicate indexes (i.e. identically configured indexes).
+
+Like other databases, Mongo has a query plan cache which it will check before generating a new plan.
+
+We can see details of the chosen strategy with the `explain` function.  It's available off either the cursor returned from a collection CRUD operation, or directly off the collection.
+
+    db.students.find({
+        _id: 50
+    }).explain()
+    
+or
+    
+    db.students.explain().find({
+            _id: 50
+        })
+
+The latter for is normally preferred as there are some explainable operations that don't return an object that has the explain function.
+
+>NB RoboMongo doesn't support he latter form so, if this is needed, you either have to use the Mongo shell.
+
+## The Primary Index
+You've seen that every document has a primary in the `_id` field, the name of this index is `_id`'.  You cannot remove this index.  Indexes can't be edited in Mongo, instead you have to drop and create, this prevents editing the `_id_` index.  The primary index is also the clustered index and is implicitly a unique index, even though it doesn't say it's unique in its output.
+
+The primary index is also a special case because it enforces that `_id` exists.
+
+## Index Types
+Mongo supports several types of indexes including simple values, unique indexes, capped indexes, and time-to-live indexes.
+
+
+| Type         | Description                                                                                            |
+|:-------------|:-------------------------------------------------------------------------------------------------------|
+| Value        | Index for searching only.  No constraints.                                                             |
+| Unique       | Ensures uniquness in the indexed values.  Null values can be excluded. (Arrays need special attention) |
+| TTL          | Time to live, documents expire after a given time                                                      |
+| 2D Sphere    | Allows searching on coordinates of the surface of a sphere.                                            |
+| 2D           | Alows searching on a infinite, 2D membrane                                                             |
+| Geo-Haystack | Allows searching on buckets on an infinate 2D membrane                                                 |
+| Text         | Allows for culture aware text indexing                                                                 |
+
+## Creating Indexes
+
+Indexes are created with the `createIndex` function.  The function accepts two arguments, the first defined the fields the index should apply to, the second contains options relating to the index.  The second argument is optional.
+
+The most basic create index function is:
+
+    db.collection.createIndex({
+        foo: 1
+    })
+    
+This gives the following result:
+
+    {
+        "createdCollectionAutomatically" : false,
+        "numIndexesBefore" : 1,
+        "numIndexesAfter" : 2,
+        "ok" : 1.0
+    }
+
+It indicates that the index was created successfully and that the total number of indexes has gone from 1 to 2 (the original index being `_id_`).  The details of the index are:
+
+    {
+        "v" : 2,
+        "key" : {
+            "foo" : 1.0
+        },
+        "name" : "foo_1",
+        "ns" : "test.collection"
+    }
+
+You can see that a name for the index has been generated.  If we wanted to declare a name then we could have passed `{ name: 'my_index_name' }` as the second argument.
+
+> NB, indexed can be read either forwards or backwards.
+
+### Exercise Eighteen: Single Field Index (Scalar values)
+1. Create an index on the surname field and perform a search.  Confirm that the expected index is used.
+1. Search on the `date_of_birth` field.  What strategy is used?
+1. Get all the documents ordered by `surname`, then by `date_of_birth`.  What strategy is used now? 
+1. Get all the documents ordered by `date_of_birth`, then by `surname`.  What strategy is used now?
+
+## Compound indexes
+
+We can create compound indexes by listing the fields we want included along with the direction.
+
+    db.collection.createIndex({
+        foo: 1,
+        bar: -1
+    })
+    
+This will create a compound index.
+
+    {
+        "v" : 2,
+        "key" : {
+            "foo" : 1.0,
+            "bar" : -1.0
+        },
+        "name" : "foo_1_bar_-1",
+        "ns" : "test.collection"
+    }
+
+The index is ascending on `foo` and descending  on `bar`.
+
+### Exercise Nineteen: Create a compound index.
+1. Create a compound index over `gender` ascending and `date_of_birth` ascending.
+1. Perform searches on these, when is the index used?
+1. Sort on `gender` descending and `date_of_birth` descending, is the index used?
+1. Sort with `gender` ascending and `date_of_birth` descending, is the index used?
+1. Sort on `gender` only, are any indexes used?
+1. Sort on `date_of_birth` only, are any indexes used?
+1. Create a new index, this time with `gender` ascending and `date_of_birth` descending and repeat the above tests.
+
+## Indexing Non-Scalar Values
+
+Values in Mongo are often arrays, document or both.  Indexing these poses a new challenge for Mongo and for yourselves in constructing a good index.
+
+Accounting for arrays is a particular problem.  When Mongo finds an array as a value it will index each field individually, this seems logical enough but it has some interesting side affects.
+
+If a compound index contains arrays then there can only by one array per document.
+
+Consider these documents:
+
+    {
+        "foo" : [1]
+    }
+    
+    { 
+        "bar" : [1] 
+    }
+
+I can add a compound index over these fields and nothing fails, however, if I try to add a document with both those fields, both with array values then I will get an error and the insert will fail:
+    
+    db.index_tests.insert({foo:[1], bar:[1]})
+    WriteResult({
+            "nInserted" : 0,
+            "writeError" : {
+                    "code" : 171,
+                    "errmsg" : "cannot index parallel arrays [bar] [foo]"
+            }
+    })
+
+The reasoning for this is complexity, the cross product of two arrays could quickly become too large to manage.
+
+Also, arrays behave differently with unique indexes.  Assume we have a unique index on `foo`.  The following two documents would be a conflict
+
+    {
+        foo: 1
+    }
+    
+    {
+        foo:[1]
+    }
+
+However, the following would not cause a conflict:
+
+    {
+        foo: [1, 1]
+    }
+
+### Exercise Twenty
+1. Why can't a unique index go used on the `personal.given_names`, given that each student never has multiple identical names?
+1. Why are duplicate entries into an array field allowed, even when there is a unique index on the field?
+
+## Time-To-Live Indexes
+
+TTL indexes are quite different to other indexes.  These indexes can be used for optimising queries, and will be if they can, however their purpose is to purge documents.  We configure a TTL index with an `expireAfterSeconds` value and a field to monitor.  If a document has this field, and the date in it is older that the number of seconds configured then the document will get deleted.
+
+> NB:  The document will get deleted when the worker process gets around to it.  You can't use this for time critical purging operations.
+
+If the field doesn't contain a date, or doesn't exist then the document will never expire. 
+
+>NB: If the document contains an array then the lowest date in the array (if there is one) will be used.
+
+### Exercise Twenty-One: TTL Indexes
+1. Create a TTL index, prove that the index will use the lowest date in an array.
+
+
+# Capped Collections
+
+Capped collections are similar to queues or the unix `tail` command.  It's a rolling set with a maximum number and total size of documents allowed, the oldest documents will be dropped to keep the number of documents at the capped amount.
+
+Capped collections require a maximum number of bytes because it will reserve that much space, the maximum number of documents is an optional extra.
+
+To create a capped collection we use the `createCollection` function and pass it an options object describing the collection.  For example, to create a collection capped called `capped` with 4096 bytes (the minimum number of bytes supported) we'd use this command:
+    
+    db.createCollection('capped', {
+        capped: true,
+        size: 4096
+    })
+
+
+
+### Exercise Twenty-Two: Prove that a Collection is Capped  
+1. Write a script to prove that the collection is capped (use the `print(string)` function to write out to the console).
+1. Create a collection capped by document count and then write a script to prove it.
+
+
+
