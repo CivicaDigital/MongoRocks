@@ -1681,7 +1681,7 @@ You can see that a name for the index has been generated.  If we wanted to decla
 1. Get all the documents ordered by `surname`, then by `date_of_birth`.  What strategy is used now? 
 1. Get all the documents ordered by `date_of_birth`, then by `surname`.  What strategy is used now?
 
-## Compound indexes
+## Compound Indexes
 
 We can create compound indexes by listing the fields we want included along with the direction.
 
@@ -1776,6 +1776,59 @@ If the field doesn't contain a date, or doesn't exist then the document will nev
 
 ### Exercise Twenty-One: TTL Indexes
 1. Create a TTL index, prove that the index will use the lowest date in an array.
+1. What happens is you create a TTL index on fields called `foo` and `bar`?
+
+## Text Indexes
+
+Text indexes allow you to perform fuzzy, weighted culture aware searches for phrases.  Text searches do not look for exact matched of strings, instead the look for words and permutations of them as well as weight the results so that the more likely correct results appear earlier in the search results.  For example, if I searched for `pony`, I would return both `pony` and  `ponies`, if I searched for `straw` then I'd match both `straw` and `straws` but not `strawberries` or `strawman`.  In order to achieve this the engine needs to understand the language the indexed fields are written in (for this reason Lorem ipsom is somewhat redundant as test data).
+
+Mongo's text indexes support searching for a words and/or phrases and excluding them too.  To create a text index we use the word 'text' instead of '1' or '-1' specifying direction.
+
+    db.darwin_copy.createIndex({
+        foo: 'text'
+    })
+
+A text index will only be used if the search specifies that it's a text search.
+
+To specify that the text index should be used we need to use the `$text` operator.  It's basic form is just having a `$search` field.
+
+    db.foo.find({
+        $text: {
+            $search: 'search expression'
+        }
+    })
+    
+Where the search expression has the following tokens:
+
+| Token        | Meaning                                                 |
+|:-------------|:--------------------------------------------------------|
+| `foo`        | Search for documents with `foo` or a variation of `foo` |
+| `-foo`       | Exclude documents with `foo` or a variation of `foo`    |
+| `"foo bar"`  | Search for documents containing the phrase `foo bar`    |
+| `-"foo bar"` | Exclude documents containing the phrase `foo bar`       |
+
+
+### Exercise Twenty-Two:  Creating and using text indexes.
+
+1. Create a text index on the `content ` field of the `darwin ` collection.
+1. Which documents are returned by a text search for `embryology`?
+1. Which documents are returned by a text search for `embryology` that excludes the word `recapitulation`?
+
+The other fields the `$text` operator accepts tell the engine how to perform the search.
+
+| Field                 | Description                                                                                    |
+|:----------------------|:-----------------------------------------------------------------------------------------------|
+| `$language`           | Instructs the engine which language to use when determining whether a match if found.          |
+| `$caseSencitive`      | Should this search be case sensitive?                                                          |
+| `$diacriticSensitive` | Should this search be diacritic sensitive? (is `true` for all text indexes prior to version 3) |
+
+### Exercise Twenty-three: Case sensitivity.
+1. Perform case sensitive searches for `embryology`, `Embryology` and `EMBRYOLOGY`.   
+
+
+## Dimensional Indexes
+
+Mongo supports three dimensional indexes, the 2D, 2D sphere and geo-haystack (geo-haystack is new in 3.6).
 
 
 # Capped Collections
@@ -1791,11 +1844,7 @@ To create a capped collection we use the `createCollection` function and pass it
         size: 4096
     })
 
-
-
 ### Exercise Twenty-Two: Prove that a Collection is Capped  
 1. Write a script to prove that the collection is capped (use the `print(string)` function to write out to the console).
 1. Create a collection capped by document count and then write a script to prove it.
-
-
 
