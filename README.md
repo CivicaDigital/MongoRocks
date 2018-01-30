@@ -1828,7 +1828,7 @@ The other fields the `$text` operator accepts tell the engine how to perform the
 
 ## Dimensional Indexes
 
-Mongo supports three dimensional indexes, the 2D, 2D sphere and geo-haystack (geo-haystack is new in 3.6).
+Mongo supports three dimensional indexes, the 2D, 2D sphere and geo-haystack (geo-haystack is new in 3.6).  These allow you to perform queries filtering on how near a point is to another, or whether a point is within some region.  2D indexes are for 2D, flat, Euclidean planes/membranes with x and y coordinates.  2D sphere indexes are for 2D, spherical Euclidean membranes references by longitude (±180°) and longitude (±90°).
 
 
 # Capped Collections
